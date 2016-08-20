@@ -113,11 +113,9 @@ void printConfig(byte configByte) {
       Serial.println ();
 }
 
-void printBinary(byte dataBytes) {
+void printBinary(byte byteForPrint) {
     Serial.print(", BIN: ");
-    for (byte i=8; i>0; i--) {
-      Serial.print(bitRead(dataBytes, i-1));
-    }
+    for (byte i=8; i>0; i--) Serial.print(bitRead(byteForPrint, i-1));
     Serial.println();
 }
 
