@@ -1,239 +1,294 @@
-/*======================================================================
- @file     ADS1110.cpp
- @author   Nadav Matalon
- @license  _________
+/*==============================================================================================================*
+    ADS1110
+ *==============================================================================================================*
+
+     @file     ADS1110.h
+     @author   Nadav Matalon
+     
+     Driver for ADS1110 (Single Channel 16-BIT ADC)
+     
+     Rev 1.0 - First release (28.3.16)
+
+ *==============================================================================================================*
+    LICENSE
+ *==============================================================================================================*
+
+     This library is a free software; you can redistribute it and/or modify it under the terms of the GNU
+     General Public License as published by the Free Software Foundation; either version 3.0 of the License,
+     or any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY
+     WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+     See the GNU General Public License for more details.
  
- Driver for ADS1110 (Single Channel 16-BIT ADC)
- 
- Rev 1.0 - First release (28.3.16)
- 
- This library is a free software; you can redistribute it and/or modify it under 
- the terms of the GNU General Public License as published by the Free Software
- Foundation; either version 3.0 of the License, or any later version.
- This program is distributed in the hope that it will be useful, but WITHOUT ANY
- WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
- PARTICULAR PURPOSE. See the GNU General Public License for more details.
- 
-=======================================================================*/
+ *==============================================================================================================*/
 
 #include <ADS1110.h>
 
-/*=====================================================================*/
-// CONSTRUCTOR
-/*=====================================================================*/
+/*==============================================================================================================*
+    CONSTRUCTOR
+ *==============================================================================================================*/
 
-ADS1110::ADS1110(byte address) {
-    ads1110address = address;
+ADS1110::ADS1110(int address) {
+    _devAddr = address;
 }
 
-/*=====================================================================*/
-// DESTRUCTOR
-/*=====================================================================*/
+/*==============================================================================================================*
+    DESTRUCTOR
+ *==============================================================================================================*/
 
 ADS1110::~ADS1110() {}
 
-/*=====================================================================*/
-// PING
-/*=====================================================================*/
+/*==============================================================================================================*
+    PING
+ *==============================================================================================================*/
 
 byte ADS1110::ping() {
-    ADS1110::initCall();
-    return ADS1110::endCall();
+    Wire.beginTransmission(_devAddr);
+    return _comBuffer = Wire.endTransmission();
+//  return Wire.endTransmission();
 }
 
-/*=====================================================================*/
-// GET CONFIGURATION SETTINGS
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET GAIN (1 = GAIN_1 / 2 = GAIN_2 / 4 = GAIN_4 / 8 = GAIN_8)
+ *==============================================================================================================*/
 
-byte ADS1110::config() {
-    if (ADS1110::dataRequest() == ADS1110_NUM_OF_BYTES) {
-        for (byte i=2; i>0; i--) Wire.read();
-        return Wire.read();
-    } else {
-        return ADS1110::transErr();
+byte ADS1110::getGain() {
+    return (1 << (getConfig() & GAIN_MASK));
+}
+
+/*==============================================================================================================*
+    SET GAIN (GAIN_1 / GAIN_2 / GAIN_4 / GAIN_8)
+ *==============================================================================================================*/
+
+void ADS1110::setGain(gain_t newGain) {
+    setConfig((getConfig() & ~GAIN_MASK) | (newGain & GAIN_MASK));
+}
+
+/*==============================================================================================================*
+    GET SAMPLE RATE (15 = SPS_15 / 30 = SPS_30 / 60 = SPS_60 / 240 = SPS_240)
+ *==============================================================================================================*/
+
+byte ADS1110::getRate() {
+    switch (getConfig() & SPS_MASK) {
+        case (SPS_15):  return  15; break;
+        case (SPS_30):  return  30; break;
+        case (SPS_60):  return  60; break;
+        case (SPS_240): return 240; break;
     }
 }
 
-/*=====================================================================*/
-// SET GAIN (GAIN_1 / GAIN_2 / GAIN_4 / GAIN_8)
-/*=====================================================================*/
+/*==============================================================================================================*
+    SET SAMPLE RATE (SPS_15 / SPS_30 / SPS_60 / SPS_240)
+ *==============================================================================================================*/
 
-byte ADS1110::setGain(gain_t n_gain) {
-    byte n_config = ADS1110::config();
-    for (byte i=2; i>0; i--) bitWrite(n_config, i-1, bitRead(n_gain, i-1));
-    return ADS1110::updateConfig(n_config);
+void ADS1110::setRate(rate_t newRate) {
+    setConfig((getConfig() & ~SPS_MASK) | (newRate & SPS_MASK));
 }
 
-/*=====================================================================*/
-// SET SAMPLE RATE (SPS_15 / SPS_30 / SPS_60 / SPS_240)
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET MODE (0 = CONTINUOUS / 1 = SINGLE-SHOT)
+ *==============================================================================================================*/
 
-byte ADS1110::setRate(rate_t n_rate) {
-    byte n_config = ADS1110::config();
-    for (byte i=4; i>2; i--) bitWrite(n_config, i-1, bitRead(n_rate, i-1));
-    return ADS1110::updateConfig(n_config);
+byte ADS1110::getMode() {
+    return ((getConfig() & MODE_MASK) >> 4);
 }
 
-/*=====================================================================*/
-// SET MODE OF OPERATION (CONTINUOUS / SINGLE_SHOT)
-/*=====================================================================*/
+/*==============================================================================================================*
+    SET MODE (CONT / SINGLE)
+ *==============================================================================================================*/
 
-byte ADS1110::setMode(mode_t n_mode) {
-    byte n_config = ADS1110::config();
-    bitWrite(n_config, 4, bitRead(n_mode, 4));
-    return ADS1110::updateConfig(n_config);
+void ADS1110::setMode(mode_t newMode) {
+    setConfig((getConfig() & ~MODE_MASK) | (newMode & MODE_MASK));
 }
 
-/*=====================================================================*/
-// UPDATE CONFIGURATION SETTINGS
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET RESOLUTION (12 = 12-BIT / 14 = 14-BIT / 15 = 15-BIT / 16 = 16-BIT)
+ *==============================================================================================================*/
 
-byte ADS1110::updateConfig(byte n_config) {
-    ADS1110::initCall();
-    Wire.write(n_config + 128);
-    return ADS1110::endCall();
+byte ADS1110::getRes() {
+    switch (getConfig() & SPS_MASK) {
+        case (SPS_15):  return 16; break;
+        case (SPS_30):  return 15; break;
+        case (SPS_60):  return 14; break;
+        case (SPS_240): return 12; break;
+    }
 }
 
-/*=====================================================================*/
-// RESET
-/*=====================================================================*/
+/*==============================================================================================================*
+    SET RESOLUTION (12_BIT / 14_BIT / 15_BIT / 16_BIT)
+ *==============================================================================================================*/
 
-byte ADS1110::reset() {
-    ADS1110::initCall();
-    Wire.write(ADS1110_DEFULT_SETTINGS);
-    return ADS1110::endCall();
+void ADS1110::setRes(res_t newRes) {
+    switch (newRes) {
+        case (RES_12): setConfig((getConfig() & ~SPS_MASK) | (SPS_15 & SPS_MASK));  break;
+        case (RES_14): setConfig((getConfig() & ~SPS_MASK) | (SPS_30 & SPS_MASK));  break;
+        case (RES_15): setConfig((getConfig() & ~SPS_MASK) | (SPS_60 & SPS_MASK));  break;
+        case (RES_16): setConfig((getConfig() & ~SPS_MASK) | (SPS_240 & SPS_MASK)); break;
+    }
 }
 
-/*=====================================================================*/
-// INITIATE CALL
-/*=====================================================================*/
+/*==============================================================================================================*
+    RESET
+ *==============================================================================================================*/
 
-void ADS1110::initCall() {
-    Wire.beginTransmission((int)ADS1110::ads1110address);
+void ADS1110::reset() {
+    setConfig(DEFAULT_SETTINGS);
 }
 
-/*=====================================================================*/
-// END CALL
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET DATA
+ *==============================================================================================================*/
 
-byte ADS1110::endCall() {
-    return Wire.endTransmission();
-}
-    
-/*=====================================================================*/
-// DATA REQUEST
-/*=====================================================================*/
-
-byte ADS1110::dataRequest() {
-    Wire.requestFrom((int)ADS1110::ads1110address, (int)ADS1110_NUM_OF_BYTES);
-    return Wire.available();
-}
-
-/*=====================================================================*/
-// READ RAW DATA
-/*=====================================================================*/
-
-int ADS1110::readData() {
-    union Data { byte b[2]; int i; } data;
-    if (ADS1110::dataRequest() == ADS1110_NUM_OF_BYTES)  {
+int ADS1110::getData() {
+    union Data { int i; byte b[2]; } data;
+    if (requestData() == NUM_BYTES)  {
         for (byte j=2; j>0; j--) data.b[j-1] = Wire.read();
         Wire.read();
-    } else {
-        data.i = ADS1110::transErr();
-    }
+    } else emptyBuffer();
     return data.i;
 }
 
-/*=====================================================================*/
-// INITIATE SINGLE CONVERSION (ONLY IN 'SINGLE-SHOT' MODE)
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET VOLTAGE (V) (CONTINUOUS MODE ONLY)
+ *==============================================================================================================*/
+
+float ADS1110::getVolt() {
+    long voltage;
+    byte config, gain;
+    unsigned int minCode;
+    union Data { int i; byte b[2]; } data;
+    if (requestData() == NUM_BYTES) {
+        data.b[1] = Wire.read();
+        data.b[0] = Wire.read();
+        config = Wire.read();
+        gain = (1 << (config & GAIN_MASK));
+        minCode = findMinCode(config & SPS_MASK);
+        voltage = ((float)data.i * 2.048) / (float)((gain * minCode) << 11);
+        //      voltage = (float)(data.i * 2.048) / (gain * minCode * 2048.0);
+    }
+    return voltage;
+}
+
+/*==============================================================================================================*
+    GET PERCENTAGE (0-100%) (CONTINUOUS MODE ONLY)
+ *==============================================================================================================*/
+
+byte ADS1110::getPercent() {
+    byte config, gain, percent;
+    unsigned int upperLimit;
+    union Data { int i; byte b[2]; } data;
+    if (requestData() == NUM_BYTES) {
+        data.b[1] = Wire.read();
+        data.b[0] = Wire.read();
+        config = Wire.read();
+        upperLimit = (findMinCode(config & SPS_MASK) << 11) - 1;
+        percent = round(data.i * 100.0 / (float)upperLimit);
+    }
+    return percent;
+}
+
+/*==============================================================================================================*
+    PERFORM A SINGLE CONVERSION (IN 'SINGLE-SHOT' MODE ONLY)
+ *==============================================================================================================*/
 
 int ADS1110::singleCon() {
-    byte n_config = ADS1110::config();
-    ADS1110::updateConfig(n_config);
-    delay(ADS1110_CONVERSION_TIME);
-    return ADS1110::readData();
+    initCall(START_CONVERSION);
+    endCall();
+    delay(CONVERSION_TIME);             // change to match different resolutions
+    return getData();
 }
 
-/*=====================================================================*/
-// I2C COMMUNICATION ERROR
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET COMMUNICATION RESULT
+ *==============================================================================================================*/
 
-byte ADS1110::transErr() {
-    while(Wire.available()) Wire.read();
-    return ADS1110_TRANSMITION_ERROR;
+byte ADS1110::getComResult() {
+    return _comBuffer;
 }
 
-/*=====================================================================*/
-// CONFIGURATION INFO
-/*=====================================================================*/
+/*==============================================================================================================*
+    CONFIGURATION INFO
+ *==============================================================================================================*/
 
-String ADS1110::configInfo(void) {
-    byte d_config = ADS1110::config();
-    byte d_gain, d_rate;
-    String s_address, s_gain, s_rate, s_mode;
-    s_address = "\nI2C Address: " + (String)ADS1110::ads1110address;
-    d_gain = (d_config & ADS1110_REG_PGA);
-    s_gain = "\nGain: " + (String)(1 << d_gain);
-    d_rate = (d_config & ADS1110_REG_DR) + 128;
-    switch (d_rate) {
-        case (ADS1110_REG_DR_15SPS) : s_rate = "\nRate: 15 SPS" ; break;
-        case (ADS1110_REG_DR_30SPS) : s_rate = "\nRate: 30 SPS" ; break;
-        case (ADS1110_REG_DR_60SPS) : s_rate = "\nRate: 60 SPS" ; break;
-        case (ADS1110_REG_DR_240SPS): s_rate = "\nRate: 240 SPS"; break;
+String ADS1110::configStr() {
+    byte config, rate;
+    config = getConfig();
+    switch (getConfig() & SPS_MASK) {
+        case (SPS_15):  rate =  15; break;
+        case (SPS_30):  rate =  30; break;
+        case (SPS_60):  rate =  60; break;
+        case (SPS_240): rate = 240; break;
     }
-    bitRead(d_config, 4) ? s_mode = "\nMode: Single Shot\n" : s_mode = "\nMode: Continuous\n";
-    return s_address + s_gain + s_rate + s_mode;
+    return "\nADS1110 CONFIGURATION INFO: \nI2C Address: " + String(_devAddr) +
+    "\nGain: x" + String(1 << (config & GAIN_MASK)) +
+    "\nRate: "  + String(rate) + "SPS" +
+    "\nMode: "  + (((config & MODE_MASK) >> 4) ? "SINGLE SHOT" : "CONTINUOUS") + "\n\n";
 }
 
-/*=====================================================================*/
-// READ DATA AS VOLTAGE
-/*=====================================================================*/
+/*==============================================================================================================*
+    GET CONFIGURATION REGISTER
+ *==============================================================================================================*/
 
-float ADS1110::readVoltage() {
-    int current_reading;
-    byte d_config = ADS1110::config();
-    byte d_gain = (1 << (d_config & ADS1110_REG_PGA));
-    long d_minCode = ADS1110::minCode(d_config + 128);
-    if (bitRead(d_config, 4)) {                         // Single-Shot mode
-        current_reading = ADS1110::singleCon();
-        if (current_reading != -1) return (current_reading * 2.048) / (d_gain * d_minCode);
-        else return current_reading;
-    } else {                                            // Continuous mode
-        current_reading = ADS1110::readData();
-        if (current_reading != -1) return (current_reading * 2.048) / (d_gain * d_minCode);
-        else return current_reading;
-    }
+byte ADS1110::getConfig() {
+    byte config;
+    if (requestData() == NUM_BYTES) {
+        for (byte i=2; i>0; i--) Wire.read();
+        config = Wire.read();
+    } else emptyBuffer();
+    return config;
 }
 
-/*=====================================================================*/
-// READ DATA AS PERCENTAGE
-/*=====================================================================*/
+/*==============================================================================================================*
+    SET CONFIGURATION REGISTER
+ *==============================================================================================================*/
 
-int ADS1110::readPercentage() {
-    int current_reading;
-    byte d_config = ADS1110::config() + 128;
-    float upperLimit = ADS1110::minCode(d_config) - 1.0;
-    if (bitRead(d_config, 4)) {                         // Single-Shot mode
-        current_reading = ADS1110::singleCon();
-        if (current_reading != -1) return round(current_reading * 100.0 / upperLimit);
-        else return current_reading;
-    } else {                                            // Continuous mode
-        current_reading = ADS1110::readData();
-        if (current_reading != -1) return round(current_reading * 100.0 / upperLimit);
-        else return current_reading;
+void ADS1110::setConfig(byte newConfig) {
+    initCall(newConfig);
+    endCall();
+}
+
+/*==============================================================================================================*
+    FIND MINIMAL CODE (BASED ON SAMPLE RATE)
+ *==============================================================================================================*/
+
+long ADS1110::findMinCode(byte rate) {
+    switch (rate) {
+        case (SPS_15) : return MIN_CODE_15;  break;
+        case (SPS_30) : return MIN_CODE_30;  break;
+        case (SPS_60) : return MIN_CODE_60;  break;
+        case (SPS_240): return MIN_CODE_240; break;
     }
 }
 
-/*=====================================================================*/
-// GET MINIMAL CODE BASED ON SAMPLE RATE
-/*=====================================================================*/
+/*==============================================================================================================*
+    INITIATE I2C COMMUNICATION
+ *==============================================================================================================*/
 
-long ADS1110::minCode(byte d_config) {
-    switch (d_config & ADS1110_REG_DR) {
-        case (ADS1110_REG_DR_15SPS) : return ADS1110_MIN_CODE_SPS15;  break;
-        case (ADS1110_REG_DR_30SPS) : return ADS1110_MIN_CODE_SPS30;  break;
-        case (ADS1110_REG_DR_60SPS) : return ADS1110_MIN_CODE_SPS60;  break;
-        case (ADS1110_REG_DR_240SPS): return ADS1110_MIN_CODE_SPS240; break;
-    }
+void ADS1110::initCall(byte data) {
+    Wire.beginTransmission(_devAddr);
+    Wire.write(data);
+}
+
+/*==============================================================================================================*
+    END I2C COMMUNICATION
+ *==============================================================================================================*/
+
+void ADS1110::endCall() {
+    _comBuffer = Wire.endTransmission();
+}
+
+/*==============================================================================================================*
+    REQUEST DATA
+ *==============================================================================================================*/
+
+byte ADS1110::requestData() {
+    Wire.requestFrom(_devAddr, NUM_BYTES);
+    return Wire.available();
+}
+
+/*==============================================================================================================*
+    EMPTY I2C BUFFER
+ *==============================================================================================================*/
+
+void ADS1110::emptyBuffer() {
+    while (Wire.available()) Wire.read();
 }
