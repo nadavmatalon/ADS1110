@@ -148,7 +148,7 @@ int ADS1110::getData() {
 }
 
 /*==============================================================================================================*
-    GET VOLTAGE (V) (CONTINUOUS MODE ONLY)
+    GET VOLTAGE (V) (SINGLE-SIDED READING ONLY)
  *==============================================================================================================*/
 
 float ADS1110::getVolt() {
@@ -163,13 +163,13 @@ float ADS1110::getVolt() {
         gain = (1 << (config & GAIN_MASK));
         minCode = findMinCode(config & SPS_MASK);
         voltage = ((float)data.i * 2.048) / (float)((gain * minCode) << 11);
-        //      voltage = (float)(data.i * 2.048) / (gain * minCode * 2048.0);
+//      voltage = (float)(data.i / (gain * minCode * 1000));
     }
     return voltage;
 }
 
 /*==============================================================================================================*
-    GET PERCENTAGE (0-100%) (CONTINUOUS MODE ONLY)
+    GET PERCENTAGE (0-100%) (SINGLE-SIDED READING ONLY)
  *==============================================================================================================*/
 
 byte ADS1110::getPercent() {

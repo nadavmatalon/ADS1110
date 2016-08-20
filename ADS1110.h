@@ -121,10 +121,10 @@ typedef enum:byte {
 } mode_t;
 
 typedef enum:byte {
-    MIN_CODE_240 = 0x01,   // -2048 * Minimal Data Value for 240_SPS (12-BIT)
-    MIN_CODE_60  = 0x04,   // -2048 * Minimal Data Value for 60_SPS  (14-BIT)
-    MIN_CODE_30  = 0x08,   // -2048 * Minimal Data Value for 30_SPS  (15-BIT)
-    MIN_CODE_15  = 0x10    // -2048 * Minimal Data Value for 15_SPS  (16-BIT)
+    MIN_CODE_240 = 0x01,   // Minimal Data Value for 240_SPS / -2048  (12-BIT)
+    MIN_CODE_60  = 0x04,   // Minimal Data Value for 60_SPS  / -2048  (14-BIT)
+    MIN_CODE_30  = 0x08,   // Minimal Data Value for 30_SPS  / -2048  (15-BIT)
+    MIN_CODE_15  = 0x10    // Minimal Data Value for 15_SPS  / -2048  (16-BIT)
 } min_code_t;
 
 typedef enum:byte {

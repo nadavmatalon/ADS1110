@@ -74,6 +74,8 @@
 byte rawData[3] = {0};                      // Container for the data recieved from the ADS1110
 byte configByte;                            // Container for the single Config byte
 int  dataBytes;                             // Container for the two Data bytes
+int  voltage;                               // Container for conversion of reading to voltage (mV)
+byte percent;                               // Container for conversion of reading to percent (0-100%)
 byte num_bytes;                             // Container for the numebr of bytes recieved
 
 void setup() {
@@ -92,8 +94,12 @@ void loop() {
           for (byte i=0; i<3; i++) rawData[i] = Wire.read();
           dataBytes  = (rawData[0] << 8) + rawData[1];
           configByte = rawData[2];
+          voltage    = calcVolt(dataBytes);
+          percent    = calcPercent(dataBytes);         
           printConfig(configByte);
           printData(dataBytes);
+          printVoltage(voltage);
+          printPercent(percent);          
       } else {
           Serial.print("Got the wrong number of bytes (");
           Serial.print(num_bytes);
@@ -101,7 +107,7 @@ void loop() {
           while (Wire.available()) Wire.read();
           for (byte i=0; i<3; i++) rawData[i] = 0;
       }
-      delay(750);
+      delay(1000);
 }
 
 void printConfig(byte configByte) {
@@ -122,6 +128,25 @@ void printBinary(byte byteForPrint) {
 void printData(int dataInt) {
     Serial.print("DATA: ");
     Serial.println(dataInt);
+}
+
+void printVoltage(int dataInt) {
+    Serial.print("VOLTAGE: ");
+    Serial.print(voltage);
+    Serial.println("mV");
+}
+
+void printPercent(int dataInt) {
+    Serial.print("PERCENTAGE: ");
+    Serial.print(percent);
+    Serial.println("%");
     Serial.println();
+}
+
+int calcVolt(int dataForVolt) {
+    return (dataForVolt >> 4);
+}
+byte calcPercent(int dataForPercent) {
+  return round((float)dataForPercent * 100.0 / 32767.0);  
 }
 
