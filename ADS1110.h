@@ -149,7 +149,7 @@ class ADS1110 {
         void   setRes(res_t newRes);
         void   reset();
         int    getData();
-        float  getVolt();
+        int    getVolt();
         byte   getPercent();
         int    singleCon();
         byte   getComResult();

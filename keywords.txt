@@ -2,56 +2,47 @@
 # Syntax Coloring Map For ADS1110
 #######################################
 
-#######################################
+##########################################
 # Datatypes (KEYWORD1)
-#######################################
+##########################################
 
 ADS1110	KEYWORD1
 
-#######################################
+##########################################
 # Instances (KEYWORD2)
-#######################################
+##########################################
 
-Ads1110	KEYWORD2
+ADS1110	KEYWORD2
 
-#######################################
+##########################################
 # Methods and Functions (KEYWORD2)
-#######################################
+##########################################
 
 ping	KEYWORD2
+getGain	KEYWORD2
 setGain	KEYWORD2
+getRate	KEYWORD2
 setRate	KEYWORD2
+getMode	KEYWORD2
 setMode	KEYWORD2
+getRes	KEYWORD2
+setRes	KEYWORD2
 reset	KEYWORD2
-configInfo	KEYWORD2
-readData	KEYWORD2
-readVoltage	KEYWORD2
-readPercentage	KEYWORD2
+getData	KEYWORD2
+getVolt	KEYWORD2
+getPercent	KEYWORD2
 singleCon	KEYWORD2
+getComResult	KEYWORD2
+configStr	KEYWORD2
 
-#######################################
+##########################################
 # Constants (LITERAL1)
-#######################################
+##########################################
 
-ADS1110_CONVERSION_DELAY	LITERAL1
-ADS1110_REG_PGA_MASK	LITERAL1
-ADS1110_REG_PGA_1	LITERAL1
-ADS1110_REG_PGA_2	LITERAL1
-ADS1110_REG_PGA_4	LITERAL1
-ADS1110_REG_PGA_8	LITERAL1
-ADS1110_REG_DR_MASK	LITERAL1
-ADS1110_REG_DR_240SPS	LITERAL1
-ADS1110_REG_DR_60SPS	LITERAL1
-ADS1110_REG_DR_30SPS	LITERAL1
-ADS1110_REG_DR_15SPS	LITERAL1
-ADS1110_REG_MODE_MASK	LITERAL1
-ADS1110_REG_MODE_CONT	LITERAL1
-ADS1110_REG_MODE_SINGLE	LITERAL1
-ADS1015_REG_DATA	LITERAL1
-ADS1015_REG_DATA_NEW	LITERAL1
-ADS1015_REG_DATA_OLD	LITERAL1
-ADS1015_REG_STATE	LITERAL1
-ADS1015_REG_SC	LITERAL1
+DEFAULT_SETTINGS	LITERAL1
+START_CONVERSION	LITERAL1
+CONVERSION_TIME	LITERAL1
+NUM_BYTES	LITERAL1
 GAIN_1	LITERAL1
 GAIN_2	LITERAL1
 GAIN_4	LITERAL1
@@ -60,10 +51,12 @@ SPS_15	LITERAL1
 SPS_30	LITERAL1
 SPS_60	LITERAL1
 SPS_240	LITERAL1
-CONTINUOUS	LITERAL1
-NEW_DATA	LITERAL1
-OLD_DATA	LITERAL1
-START_CONVERSION	LITERAL1
+CONT	LITERAL1
+SINGLE	LITERAL1
+RES_12	LITERAL1
+RES_14	LITERAL1
+RES_15	LITERAL1
+RES_16	LITERAL1
 
 #######################################
 # Built-In Variables (LITERAL2)
@@ -72,4 +65,5 @@ START_CONVERSION	LITERAL1
 gain_t	LITERAL2
 rate_t	LITERAL2
 mode_t	LITERAL2
-
+min_code_t	LITERAL2
+res_t	LITERAL2

@@ -38,13 +38,13 @@ ADS1110::ADS1110(int address) {
 ADS1110::~ADS1110() {}
 
 /*==============================================================================================================*
-    PING
+    PING (0 = SUCCESS / 1-6 = ERROR CODE)
  *==============================================================================================================*/
 
 byte ADS1110::ping() {
     Wire.beginTransmission(_devAddr);
-    return _comBuffer = Wire.endTransmission();
-//  return Wire.endTransmission();
+    endCall();
+    return _comBuffer;
 }
 
 /*==============================================================================================================*
@@ -151,10 +151,9 @@ int ADS1110::getData() {
     GET VOLTAGE (V) (SINGLE-SIDED READING ONLY)
  *==============================================================================================================*/
 
-float ADS1110::getVolt() {
-    long voltage;
-    byte config, gain;
-    unsigned int minCode;
+int ADS1110::getVolt() {
+    byte config, gain, minCode;
+    int voltage;
     union Data { int i; byte b[2]; } data;
     if (requestData() == NUM_BYTES) {
         data.b[1] = Wire.read();
@@ -162,8 +161,8 @@ float ADS1110::getVolt() {
         config = Wire.read();
         gain = (1 << (config & GAIN_MASK));
         minCode = findMinCode(config & SPS_MASK);
-        voltage = ((float)data.i * 2.048) / (float)((gain * minCode) << 11);
-//      voltage = (float)(data.i / (gain * minCode * 1000));
+        voltage = round((float)data.i * 2.048) / (float)((gain * minCode) << 11);
+//      voltage = round(float)(data.i / (gain * minCode * 1000));
     }
     return voltage;
 }
