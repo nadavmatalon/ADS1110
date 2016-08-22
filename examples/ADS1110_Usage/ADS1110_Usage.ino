@@ -168,6 +168,7 @@ void setup() {
     testMode();
     testRes();
     testReset();
+    testVref();
     testConfigStr(); 
     testGetData();
     testGetVolt();
@@ -181,8 +182,8 @@ void loop() {}
 
 void testPing() {
     Serial.println(F("\n\nTESTING PING"));
+    Serial.print(F("\nPinging device... "));
     testResult = (ADS1110.ping() ? " No Response" : " Pong!");
-    Serial.print(F("\nPing device... "));
     Serial.println(testResult);
     Serial.println(F("\n"));
     takeAbreak();
@@ -277,6 +278,20 @@ void testRes() {
     Serial.println("-BIT\n");
 }
 
+void testVref() {
+    Serial.println(F("\nTESTING VOLTAGE REFERENCE"));
+    Serial.print(F("\nCurrent Vref:  "));
+    Serial.print(ADS1110.getVref() ? "EXTERNAL REFERENCE\n" : "INTERNAL REFERENCE\n");
+    Serial.print(F("\nSet Vref to:   EXTERNAL REFERENCE\n"));
+    ADS1110.setVref(EXT_REF);
+    Serial.print(F("\nCurrent Vref:  "));
+    Serial.print(ADS1110.getVref() ? "EXTERNAL REFERENCE\n" : "INTERNAL REFERENCE\n");
+    Serial.print(F("\nSet Vref to:   INTERNAL REFERENCE\n"));
+    ADS1110.setVref(INT_REF);
+    Serial.print(F("\nCurrent Vref:  "));
+    Serial.println(ADS1110.getVref() ? "EXTERNAL REFERENCE\n\n" : "INTERNAL REFERENCE\n\n");
+}
+
 void testReset() {
     byte gain, rate, mode, resolution;
     String currentModeStr;
@@ -300,7 +315,7 @@ void testReset() {
 
 void testConfigStr() {
     Serial.println(F("\nTESTING CONFIGURATION STRING"));
-    Serial.print(F("\nGETTING DATA AND PRINTING CONFIG STRING\n"));
+    Serial.print(F("\nGetting data and pringing config string...\n"));
     Serial.println(ADS1110.configStr());
     Serial.println(F(""));
     takeAquickBreak();
@@ -336,7 +351,7 @@ void testGetPercent() {
     Serial.println(F("\nTESTING PERCENTAGE READING"));
     for (byte i=0; i<10; i++) {
         percent = ADS1110.getPercent();
-        Serial.print(F("\nPERCENTAGE: "));
+        Serial.print(F("\nPercentage: "));
         Serial.print(percent);
         Serial.println(F("%"));
         takeAbreak();
@@ -350,13 +365,12 @@ void testSingleCon() {
     ADS1110.setMode(SINGLE);
     for (byte i=0; i<10; i++) {
         singleConversion = ADS1110.singleCon();
-        Serial.print(F("\DATA: "));
+        Serial.print(F("\Raw Data: "));
         Serial.print(singleConversion);
         Serial.println(F("\n"));
         takeAbreak();
     }
     ADS1110.setMode(CONT);
-    Serial.println(F("\n"));
 }
 
 void testGetComResult() {

@@ -93,10 +93,10 @@
 #error “The ADS1110 library only supports AVR processors.”
 #endif
 
-const byte DEFAULT_SETTINGS = 0x8C;      // B10001100 (16-BIT, 15_SPS, GAIN_1, CONTINUOUS)
-const byte START_CONVERSION = 0x80;      // B10000000
+const byte DEFAULT_SETTINGS = 0x8C;      // B10001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
+const byte START_CONVERSION = 0x80;      // B10000000 (For 'Single-Shot' Mode Only)
 const byte CONVERSION_TIME  =   70;      // mS
-const int  NUM_BYTES        =    3;      // Number of bytes requested from the device
+const int  NUM_BYTES        =    3;      // Fixed number of bytes requested from the device
 
 typedef enum:byte {
     GAIN_MASK = 0x03,      // B00000011
@@ -121,18 +121,23 @@ typedef enum:byte {
 } mode_t;
 
 typedef enum:byte {
-    MIN_CODE_240 = 0x01,   // Minimal Data Value for 240_SPS / -2048  (12-BIT)
-    MIN_CODE_60  = 0x04,   // Minimal Data Value for 60_SPS  / -2048  (14-BIT)
-    MIN_CODE_30  = 0x08,   // Minimal Data Value for 30_SPS  / -2048  (15-BIT)
-    MIN_CODE_15  = 0x10    // Minimal Data Value for 15_SPS  / -2048  (16-BIT)
+    MIN_CODE_240 = 0x01,   //  1 - Minimal Data Value for 240_SPS / -2048  (12-BIT)
+    MIN_CODE_60  = 0x04,   //  4 - Minimal Data Value for 60_SPS  / -2048  (14-BIT)
+    MIN_CODE_30  = 0x08,   //  8 - Minimal Data Value for 30_SPS  / -2048  (15-BIT)
+    MIN_CODE_15  = 0x10    // 16 - Minimal Data Value for 15_SPS  / -2048  (16-BIT) (Default)
 } min_code_t;
 
 typedef enum:byte {
-    RES_12,                //
-    RES_14,                //
-    RES_15,                //
-    RES_16                 //
+    RES_12,                // 12-BIT Resolution
+    RES_14,                // 14-BIT Resolution
+    RES_15,                // 15-BIT Resolution
+    RES_16                 // 16-BIT Resolution (Default)
 } res_t;
+
+typedef enum:int {
+    INT_REF =    0,        // Inernal Reference: Pin Vin- is connected to GND (Default)
+    EXT_REF = 2048         // External Reference: Pin Vin- is connected to 2.048V source
+} vref_t;
 
 class ADS1110 {
     public:
@@ -147,6 +152,8 @@ class ADS1110 {
         void   setMode(mode_t newMode);
         byte   getRes();
         void   setRes(res_t newRes);
+        int    getVref();
+        void   setVref(vref_t newVref);
         void   reset();
         int    getData();
         int    getVolt();
@@ -157,6 +164,7 @@ class ADS1110 {
     private:
         int    _devAddr;
         byte   _comBuffer;
+        int    _vref;
         byte   getConfig();
         void   setConfig(byte newConfig);
         byte   findMinCode(byte sampleRate);

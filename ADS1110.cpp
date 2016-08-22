@@ -29,6 +29,7 @@
 
 ADS1110::ADS1110(int address) {
     _devAddr = address;
+    _vref = INT_REF;
 }
 
 /*==============================================================================================================*
@@ -127,6 +128,22 @@ void ADS1110::setRes(res_t newRes) {
 }
 
 /*==============================================================================================================*
+    GET VOLTAGE REFERENCE (0 = INTERNAL / 2048 = EXTERNAL)
+ *==============================================================================================================*/
+
+int ADS1110::getVref() {
+    return _vref;
+}
+
+/*==============================================================================================================*
+    SET VOLTAGE REFERENCE (INT_REF / EXT_REF)
+ *==============================================================================================================*/
+
+void ADS1110::setVref(vref_t newVref) {
+    _vref = newVref;
+}
+
+/*==============================================================================================================*
     RESET
  *==============================================================================================================*/
 
@@ -141,21 +158,27 @@ void ADS1110::reset() {
 int ADS1110::getData() {
     union Data { int i; byte b[2]; } data;
     if (requestData() == NUM_BYTES)  {
-        for (byte j=2; j>0; j--) data.b[j-1] = Wire.read();
+        data.b[1] = Wire.read();
+        data.b[0] = Wire.read();
         Wire.read();
     } else emptyBuffer();
     return data.i;
 }
 
 /*==============================================================================================================*
-    GET VOLTAGE (mV) (ONE-SIDED READING ONLY)
+    GET VOLTAGE (mV)
  *==============================================================================================================*/
 
-// Vin+ = (Output_Code / (Min_Code  * GAIN)) + Vin-
+// Vin+ = (output_code / (my_min_code  * GAIN)) + _Vreg
+// Output_Code = raw data from device (int)
+// my_min_code = 16 (15_SPS; 16-BIT) / 8 (30_SPS; 15-BIT) / 4 (60_SPS; 14-BIT) / 1 (240_SPS; 12-BIT)
+// _Vref = Vin- (in mV, depends on whether Vin- is connected to GND or to a 2048mV reference source)
+// Vin+ = 0 - 2048mV when Pin Vin- (=_Vref) is connected to GND
+// Vin+ = 0 - 4096mV when Pin Vin- (=_Vref) is connected to an external 2.048V reference source
 
 int ADS1110::getVolt() {
     byte config, gain, minCode;
-    int Vneg, voltage;
+    int voltage;
     union Data { int i; byte b[2]; } data;
     if (requestData() == NUM_BYTES) {
         data.b[1] = Wire.read();
@@ -163,23 +186,13 @@ int ADS1110::getVolt() {
         config = Wire.read();
         gain = (1 << (config & GAIN_MASK));
         minCode = findMinCode(config & SPS_MASK);
-        Vneg = 0;  // in mV
-        voltage = round((float)data.i / (float)(minCode * gain)) + Vneg;
+        voltage = round((float)data.i / (float)(minCode * gain)) + _vref;
     }
     return voltage;
 }
 
-
-// Output_Code = −1 * Real_Min_Code  * GAIN * ((Vin+ - Vin-) / 2.048)
-
-// 2.048 * Output_Code = -1 * Real_Min_Code  * GAIN * (Vin+ - Vin-)
-
-// (Vin+ - Vin-) = (2048 * Output_Code) / (Real_Min_Code  * GAIN * 1000)
-
-
-
 /*==============================================================================================================*
-    GET PERCENTAGE (0-100%) (ONE-SIDED READING ONLY)
+    GET PERCENTAGE (0-100%) (SINGLE-ENDED READING ONLY)
  *==============================================================================================================*/
 
 byte ADS1110::getPercent() {
@@ -220,7 +233,7 @@ byte ADS1110::getComResult() {
  *==============================================================================================================*/
 
 String ADS1110::configStr() {
-    byte config, rate, res;
+    byte config, rate, res, vref;
     config = getConfig();
     switch (getConfig() & SPS_MASK) {
         case (SPS_15):  rate =  15; res = 16; break;
@@ -232,7 +245,8 @@ String ADS1110::configStr() {
     "\nGAIN:         x" + String(1 << (config & GAIN_MASK)) +
     "\nSAMPLE RATE:  "   + String(rate) + " SPS" +
     "\nMODE:         "   + (((config & MODE_MASK) >> 4) ? "SINGLE-SHOT" : "CONTINUOUS") +
-    "\nRESOLUTION:   "   + String(res) + "-BIT\n";
+    "\nRESOLUTION:   "   + String(res) + "-BIT" +
+    "\nVOLTAGE REF:  "   + (getVref() ? "EXTERNAL" : "INTERNAL");
 }
 
 /*==============================================================================================================*

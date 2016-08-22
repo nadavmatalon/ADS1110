@@ -27,6 +27,8 @@ getMode	KEYWORD2
 setMode	KEYWORD2
 getRes	KEYWORD2
 setRes	KEYWORD2
+getVneg	KEYWORD2
+setVneg	KEYWORD2
 reset	KEYWORD2
 getData	KEYWORD2
 getVolt	KEYWORD2
@@ -57,6 +59,8 @@ RES_12	LITERAL1
 RES_14	LITERAL1
 RES_15	LITERAL1
 RES_16	LITERAL1
+INT_REF	LITERAL1
+EXT_REF	LITERAL1
 
 #######################################
 # Built-In Variables (LITERAL2)
@@ -67,3 +71,4 @@ rate_t	LITERAL2
 mode_t	LITERAL2
 min_code_t	LITERAL2
 res_t	LITERAL2
+vneg_t	LITERAL2
