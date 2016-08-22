@@ -108,10 +108,10 @@ typedef enum:byte {
 
 typedef enum:byte {
     SPS_MASK = 0x0C,       // B00001100
-    SPS_15   = 0x0C,       // B00001100 (Default)
-    SPS_30   = 0x08,       // B00001000
-    SPS_60   = 0x04,       // B00000100
-    SPS_240  = 0x00        // B00000000
+    SPS_15   = 0x0C,       // 12 - B00001100 (Default)
+    SPS_30   = 0x08,       //  8 - B00001000
+    SPS_60   = 0x04,       //  4 - B00000100
+    SPS_240  = 0x00        //  0 - B00000000
 } rate_t;
 
 typedef enum:byte {
@@ -128,10 +128,10 @@ typedef enum:byte {
 } min_code_t;
 
 typedef enum:byte {
-    RES_12 = 0x0C,         //
-    RES_14 = 0x0E,         //
-    RES_15 = 0x0F,         //
-    RES_16 = 0x10          //
+    RES_12,                //
+    RES_14,                //
+    RES_15,                //
+    RES_16                 //
 } res_t;
 
 class ADS1110 {
@@ -159,7 +159,7 @@ class ADS1110 {
         byte   _comBuffer;
         byte   getConfig();
         void   setConfig(byte newConfig);
-        long   findMinCode(byte rate);
+        byte   findMinCode(byte sampleRate);
         void   initCall(byte data);
         void   endCall();
         byte   requestData();

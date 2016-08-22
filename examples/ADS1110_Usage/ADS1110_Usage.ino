@@ -159,211 +159,221 @@ void setup() {
     Wire.begin();                             // Join the the I2C Bus
     while(!Serial);                           // Wait for Serial Port to initialize
     takeAbreak();                             // Short pause
-    Serial.print("\nSerial Open\n");          // Let us know Serial Port initialized
+    ADS1110.reset();
+    Serial.print(F("\nSerial Open\n"));       // Let us know Serial Port initialized
+    Serial.print(F("\nSTART TESTING\n"));     // Let us know testing is done
     testPing();                               // Pings the ADS1110 to verify I2C communication has been established
-    testConfig();                             // Run the various Configuration Settings tests
-    testData();                               // Run the various Data Aquisition tests
-    Serial.print("\nDone Testing\n");         // Let us know testing is done
-}
-
-void loop() {}
-
-void testPing() {
-    testResult = (ADS1110.ping() ? "No Response" : "Pong");
-    Serial.print("\nPing device: " + testResult + "\n");
-    takeAbreak();
-}
-
-void testConfig() { 
     testGain();
     testRate();
     testMode();
     testRes();
     testReset();
-    testConfigStr();
-}
-
-void testData() {
+    testConfigStr(); 
     testGetData();
     testGetVolt();
     testGetPercent();
     testSingleCon();
-    testGetComResult();
+    testGetComResult(); 
+    Serial.print(F("\nDONE TESTING\n"));         // Let us know testing is done
+}
+
+void loop() {}
+
+void testPing() {
+    Serial.println(F("\n\nTESTING PING"));
+    testResult = (ADS1110.ping() ? " No Response" : " Pong!");
+    Serial.print(F("\nPing device... "));
+    Serial.println(testResult);
+    Serial.println(F("\n"));
+    takeAbreak();
 }
 
 void testGain() {
     byte gain;
     gain_t gains[4] = { GAIN_2, GAIN_4, GAIN_8, GAIN_1 };
-    Serial.println("\nTESTING GAIN SETTINGS\n");
-    for (byte i=0; i<5; i++) {
+    byte gainsStr[4] = { 2, 4, 8, 1 };
+    Serial.println(F("\nTESTING GAIN"));
+    for (byte i=0; i<4; i++) {
         gain = ADS1110.getGain();
-        Serial.println("Current Gain:  x" + String(gain) + "\n");
-        Serial.println("Set Gain to:   x" + String(gains[i]) + "\n");
+        Serial.print(F("\nCurrent Gain:  x"));
+        Serial.println(gain);
+        Serial.print(F("\nSet Gain to:   x"));
+        Serial.println(gainsStr[i]);
         takeAbreak();
         ADS1110.setGain(gains[i]);
     }
     takeAbreak();
     gain = ADS1110.getGain();
-    Serial.print("Current Gain:  x" + String(gain) + "\n");
+    Serial.print(F("\nCurrent Gain:  x"));
+    Serial.println(gain);
+    Serial.print(F("\n"));
 }
 
 void testRate() {
     byte rate;
     rate_t rates[4] = { SPS_30, SPS_60, SPS_240, SPS_15 };
-    Serial.println("\nTESTING SAMPLE RATE SETTINGS\n");
-    for (byte i=0; i<5; i++) {
+    byte ratesStr[4] = { 30, 60, 240, 15 };
+    Serial.println(F("\nTESTING SAMPLE RATE\n"));
+    for (byte i=0; i<4; i++) {
         rate = ADS1110.getRate();
-        Serial.println("Current Sample Rate:  " + String(rate) + " SPS\n");
-        Serial.println("Set Sample Rate to:   " + String(rates[i]) + "SPS\n");
+        Serial.print(F("Current Sample Rate:  "));
+        Serial.print(rate);
+        Serial.println(F(" SPS\n"));
+        Serial.print(F("Set Sample Rate to:   "));
+        Serial.print(ratesStr[i]);
+        Serial.println(F(" SPS\n"));
         takeAbreak();
         ADS1110.setRate(rates[i]);
     }
     takeAbreak();
     rate = ADS1110.getRate();
-    Serial.print("Current Sample Rate:  " + String(rate) + " SPS\n");
+    Serial.print(F("Current Sample Rate:  "));
+    Serial.print(rate);
+    Serial.println(F(" SPS\n"));
 }
 
 void testMode() {
     String currentModeStr;
-    mode_t modes[2] = { SINGLE, CONT };
-    Serial.println("\nTESTING MODE SETTINGS\n");
-    for (byte i=0; i<2; i++) {
-        currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
-        Serial.println("Current Mode:  " + currentModeStr + "\n");
-        Serial.println("Set Mode to:   " + String(modes[i]) + "\n");
-        takeAbreak();
-        ADS1110.setMode(modes[i]);
-    }
+    Serial.println(F("\nTESTING CONVERSION MODE"));
+    currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
+    Serial.print(F("\nCurrent Mode:  "));
+    Serial.println(currentModeStr);
+    Serial.println(F("\nSet Mode to:   SINGLE-SHOT"));
+    ADS1110.setMode(SINGLE);
     takeAbreak();
     currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
-    Serial.print("Current Mode:  " + currentModeStr + "\n");
+    Serial.print(F("\nCurrent Mode:  "));
+    Serial.println(currentModeStr);
+    Serial.println(F("\nSet Mode to:   CONTINUOUS"));
+    ADS1110.setMode(CONT);
+    takeAbreak();
+    currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
+    Serial.print(F("\nCurrent Mode:  "));
+    Serial.println(currentModeStr);
+    Serial.println(F(""));
+    takeAbreak();
 }
 
 void testRes() {
     byte resolution;
     res_t resolutions[4] = { RES_12, RES_14, RES_15, RES_16 };
-    Serial.println("\nTESTING RESOLUTION SETTINGS\n");
-    for (byte i=0; i<5; i++) {
+    byte resolutionsStr[4] = { 12, 14, 15, 16 };
+    Serial.println(F("\nTESTING RESOLUTION\n"));
+    for (byte i=0; i<4; i++) {
         resolution = ADS1110.getRes();
-        Serial.print("Current Resolution:  " + String(resolution) + "-BITS\n");
-        Serial.print("Set Resolution to:   " + String(resolutions[i]) + "-BITS\n");
+        Serial.print(F("Current Resolution:  "));
+        Serial.print(resolution);
+        Serial.println(F("-BIT\n"));
         takeAbreak();
+        Serial.print(F("Set Resolution to:   "));
+        Serial.print(resolutionsStr[i]);
+        Serial.println(F("-BIT\n"));
         ADS1110.setRes(resolutions[i]);
     }
     takeAbreak();
     resolution = ADS1110.getRes();
-    Serial.print("Current Resolution:  " + String(resolution) + "-BITS\n");
+    Serial.print(F("Current Resolution:  "));
+    Serial.print(resolution);
+    Serial.println("-BIT\n");
 }
 
 void testReset() {
     byte gain, rate, mode, resolution;
     String currentModeStr;
-    Serial.println("\nTESTING RESET\n");
-    Serial.println("Changing to different Settings:\n");
+    Serial.println(F("\nTESTING RESET\n"));
+    Serial.print(F("Changing Settings to: GAIN x4, 60 SPS, SINGLE-SHOT, 14-BIT..."));
     ADS1110.setGain(GAIN_4);
     takeAquickBreak();
     ADS1110.setRate(SPS_60);
     takeAquickBreak();
     ADS1110.setMode(SINGLE);
     takeAquickBreak();
-    gain = ADS1110.getGain();
-    Serial.println("Current Gain:         x" + String(gain) + "\n");
-    takeAquickBreak();
-    rate = ADS1110.getRate();
-    Serial.println("Current Sample Rate:  " + String(rate) + " SPS\n");
-    takeAquickBreak();
-    currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
-    Serial.print("Current Mode:  " + currentModeStr + "\n");
-    takeAquickBreak();
-    resolution = ADS1110.getRes();
-    Serial.print("Current Resolution:  " + String(resolution) + "-BITS\n");
-    takeAquickBreak();
-    Serial.println();    
-    Serial.println("\nResetting Device\n");
+    Serial.println(F(" DONE!\n"));
+    Serial.println(ADS1110.configStr());  
+    Serial.print(F("\nRESETTING CONFIGURATION..."));
     ADS1110.reset();
-    Serial.println("Return to Default Settings:\n");
+    Serial.println(F(" DONE!\n"));
     takeAquickBreak();
-    gain = ADS1110.getGain();
-    Serial.println("Current Gain:         x" + String(gain) + "\n");
-    takeAquickBreak();
-    rate = ADS1110.getRate();
-    Serial.println("Current Sample Rate:  " + String(rate) + " SPS\n");
-    takeAquickBreak();
-    currentModeStr = ADS1110.getMode() ? "SINGLE-SHOT" : "CONTINUOUS";
-    Serial.print("Current Mode:  " + currentModeStr + "\n");
-    takeAquickBreak();
-    resolution = ADS1110.getRes();
-    Serial.print("Current Resolution:  " + String(resolution) + "-BITS\n");
+    Serial.println(ADS1110.configStr());  
     takeAquickBreak();
 }
 
 void testConfigStr() {
-    Serial.println("\nTESTING CONFIGURATION STRING\n");
+    Serial.println(F("\nTESTING CONFIGURATION STRING"));
+    Serial.print(F("\nGETTING DATA AND PRINTING CONFIG STRING\n"));
     Serial.println(ADS1110.configStr());
-    Serial.println();
+    Serial.println(F(""));
     takeAquickBreak();
 }
 
 void testGetData() {
     int data;
-    Serial.println("\nTESTING RAW DATA\n");
-    for (byte i=0; i<20; i++) {
+    Serial.println(F("\nTESTING RAW DATA"));
+    for (byte i=0; i<10; i++) {
         data = ADS1110.getData();
-        Serial.print("\nRaw Data: " + String(data) + "\n");
+        Serial.print(F("\nRaw Data: "));
+        Serial.println(data);
         takeAbreak();
     }
-    Serial.println();
+    Serial.println(F("\n"));
 }
 
 void testGetVolt() {
     int mVolt;
-    Serial.println("\nTESTING VOLTAGE READING\n");
-    for (byte i=0; i<20; i++) {
+    Serial.println(F("\nTESTING VOLTAGE READING"));
+    for (byte i=0; i<10; i++) {
         mVolt = ADS1110.getVolt();
-        Serial.print("\nVoltage: " + String(mVolt) + "mV\n");
+        Serial.print(F("\nVoltage: "));
+        Serial.print(mVolt);
+        Serial.println(F("mV"));
         takeAbreak();
     }
-    Serial.println();
+    Serial.println(F("\n"));
 }
 
 void testGetPercent() {
     byte percent;
-    Serial.println("\nTESTING PERCENTAGE READING\n");
-    for (byte i=0; i<20; i++) {
+    Serial.println(F("\nTESTING PERCENTAGE READING"));
+    for (byte i=0; i<10; i++) {
         percent = ADS1110.getPercent();
-        Serial.print("\nVoltage: " + String(percent) + "%\n");
+        Serial.print(F("\nPERCENTAGE: "));
+        Serial.print(percent);
+        Serial.println(F("%"));
         takeAbreak();
     }
-    Serial.println();
+    Serial.println(F("\n"));
 }
 
 void testSingleCon() {
     int singleConversion;
-    Serial.println("\nTESTING SINGLE CONVERSION\n");
+    Serial.println(F("\nTESTING SINGLE CONVERSION\n"));
     ADS1110.setMode(SINGLE);
-    for (byte i=0; i<20; i++) {
+    for (byte i=0; i<10; i++) {
         singleConversion = ADS1110.singleCon();
-        Serial.print("\nVoltage: " + String(singleConversion) + "\n");
+        Serial.print(F("\DATA: "));
+        Serial.print(singleConversion);
+        Serial.println(F("\n"));
         takeAbreak();
     }
     ADS1110.setMode(CONT);
-    Serial.println();
+    Serial.println(F("\n"));
 }
 
 void testGetComResult() {
       byte comResult;
-      Serial.println("\nTESTING I2C COMMUNICATION RESULT\n");
-      Serial.println("\nPinging the device...\n");
+      Serial.print(F("\nTESTING I2C COMMUNICATION RESULT\n\nCalling device..."));
       comResult = ADS1110.ping();
-      Serial.print("Got response: " + String(comResult) + " (");
+      Serial.print(F(" Got response: "));
+      Serial.print(comResult);
+      Serial.print(F(" ("));
       switch (comResult) {
-          case(0): Serial.println("OK)"); break;
-          case(1): Serial.println("ERROR: Buffer overflow)"); break;
-          case(2): Serial.println("ERROR: Address sent, NACK received)"); break;
-          case(3): Serial.println("ERROR: Data send, NACK received"); break;
-          case(4): Serial.println("ERROR: Other error: lost bus arbitration, bus error, etc.)"); break;
-          case(5): Serial.println("ERROR: Timed-out while trying to become Bus Master)"); break;
-          case(6): Serial.println("ERROR: Timed-out while waiting for data to be sent)"); break;
+          case(0): Serial.println(F("OK)")); break;
+          case(1): Serial.println(F("ERROR: Buffer overflow)")); break;
+          case(2): Serial.println(F("ERROR: Address sent, NACK received)")); break;
+          case(3): Serial.println(F("ERROR: Data send, NACK received")); break;
+          case(4): Serial.println(F("ERROR: Other error: lost bus arbitration, bus error, etc.)")); break;
+          case(5): Serial.println(F("ERROR: Timed-out while trying to become Bus Master)")); break;
+          case(6): Serial.println(F("ERROR: Timed-out while waiting for data to be sent)")); break;
       }
 }
 

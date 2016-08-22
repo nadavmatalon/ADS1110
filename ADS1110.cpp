@@ -119,10 +119,10 @@ byte ADS1110::getRes() {
 
 void ADS1110::setRes(res_t newRes) {
     switch (newRes) {
-        case (RES_12): setConfig((getConfig() & ~SPS_MASK) | (SPS_15 & SPS_MASK));  break;
-        case (RES_14): setConfig((getConfig() & ~SPS_MASK) | (SPS_30 & SPS_MASK));  break;
-        case (RES_15): setConfig((getConfig() & ~SPS_MASK) | (SPS_60 & SPS_MASK));  break;
-        case (RES_16): setConfig((getConfig() & ~SPS_MASK) | (SPS_240 & SPS_MASK)); break;
+        case (RES_12): setConfig((getConfig() & ~SPS_MASK) | (SPS_240 & SPS_MASK)); break;
+        case (RES_14): setConfig((getConfig() & ~SPS_MASK) | (SPS_60  & SPS_MASK)); break;
+        case (RES_15): setConfig((getConfig() & ~SPS_MASK) | (SPS_30  & SPS_MASK)); break;
+        case (RES_16): setConfig((getConfig() & ~SPS_MASK) | (SPS_15  & SPS_MASK)); break;
     }
 }
 
@@ -148,12 +148,14 @@ int ADS1110::getData() {
 }
 
 /*==============================================================================================================*
-    GET VOLTAGE (V) (SINGLE-SIDED READING ONLY)
+    GET VOLTAGE (mV) (ONE-SIDED READING ONLY)
  *==============================================================================================================*/
+
+// Vin+ = (Output_Code / (Min_Code  * GAIN)) + Vin-
 
 int ADS1110::getVolt() {
     byte config, gain, minCode;
-    int voltage;
+    int Vneg, voltage;
     union Data { int i; byte b[2]; } data;
     if (requestData() == NUM_BYTES) {
         data.b[1] = Wire.read();
@@ -161,14 +163,23 @@ int ADS1110::getVolt() {
         config = Wire.read();
         gain = (1 << (config & GAIN_MASK));
         minCode = findMinCode(config & SPS_MASK);
-        voltage = round((float)data.i * 2.048) / (float)((gain * minCode) << 11);
-//      voltage = round(float)(data.i / (gain * minCode * 1000));
+        Vneg = 0;  // in mV
+        voltage = round((float)data.i / (float)(minCode * gain)) + Vneg;
     }
     return voltage;
 }
 
+
+// Output_Code = −1 * Real_Min_Code  * GAIN * ((Vin+ - Vin-) / 2.048)
+
+// 2.048 * Output_Code = -1 * Real_Min_Code  * GAIN * (Vin+ - Vin-)
+
+// (Vin+ - Vin-) = (2048 * Output_Code) / (Real_Min_Code  * GAIN * 1000)
+
+
+
 /*==============================================================================================================*
-    GET PERCENTAGE (0-100%) (SINGLE-SIDED READING ONLY)
+    GET PERCENTAGE (0-100%) (ONE-SIDED READING ONLY)
  *==============================================================================================================*/
 
 byte ADS1110::getPercent() {
@@ -209,18 +220,19 @@ byte ADS1110::getComResult() {
  *==============================================================================================================*/
 
 String ADS1110::configStr() {
-    byte config, rate;
+    byte config, rate, res;
     config = getConfig();
     switch (getConfig() & SPS_MASK) {
-        case (SPS_15):  rate =  15; break;
-        case (SPS_30):  rate =  30; break;
-        case (SPS_60):  rate =  60; break;
-        case (SPS_240): rate = 240; break;
+        case (SPS_15):  rate =  15; res = 16; break;
+        case (SPS_30):  rate =  30; res = 15; break;
+        case (SPS_60):  rate =  60; res = 14; break;
+        case (SPS_240): rate = 240; res = 12; break;
     }
-    return "\nADS1110 CONFIGURATION INFO: \nI2C Address: " + String(_devAddr) +
-    "\nGain: x" + String(1 << (config & GAIN_MASK)) +
-    "\nRate: "  + String(rate) + "SPS" +
-    "\nMode: "  + (((config & MODE_MASK) >> 4) ? "SINGLE SHOT" : "CONTINUOUS") + "\n\n";
+    return "\nADS1110 CONFIGURATION DATA \nI2C Address:  " + String(_devAddr) +
+    "\nGAIN:         x" + String(1 << (config & GAIN_MASK)) +
+    "\nSAMPLE RATE:  "   + String(rate) + " SPS" +
+    "\nMODE:         "   + (((config & MODE_MASK) >> 4) ? "SINGLE-SHOT" : "CONTINUOUS") +
+    "\nRESOLUTION:   "   + String(res) + "-BIT\n";
 }
 
 /*==============================================================================================================*
@@ -249,8 +261,8 @@ void ADS1110::setConfig(byte newConfig) {
     FIND MINIMAL CODE (BASED ON SAMPLE RATE)
  *==============================================================================================================*/
 
-long ADS1110::findMinCode(byte rate) {
-    switch (rate) {
+byte ADS1110::findMinCode(byte sampleRate) {
+    switch (sampleRate) {
         case (SPS_15) : return MIN_CODE_15;  break;
         case (SPS_30) : return MIN_CODE_30;  break;
         case (SPS_60) : return MIN_CODE_60;  break;
