@@ -193,9 +193,9 @@ Parameters: None
 Description: Generates a printable String with all current Configuration Settings  
 Returns: String  
 
-__IMPORTANT:__ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection & INTERNAL definition).  
+>__IMPORTANT:__ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection & INTERNAL definition).  
 
-__NOTE:__ The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically 
+>__NOTE:__ The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically 
 cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT).
 
 And, lastly, if for whatever reason you wish to destruct an existing ADS1110 object, you can use the following line to do so:
