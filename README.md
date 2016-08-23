@@ -193,7 +193,7 @@ Parameters: None
 Description: Generates a printable String with all current Configuration Settings  
 Returns: String  
 
-__NOTE:__ The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
+>__NOTE:__ The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
 cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT)
 
 And, lastly, if for whatever reason you wish to destruct an existing ADS1110 object, you can use the following line to do so:
@@ -205,13 +205,13 @@ And, lastly, if for whatever reason you wish to destruct an existing ADS1110 obj
 
 ## I2C COMMUNICATION RESULT CODES
 
-0 ... Success (no error)
-1 ... Buffer overflow
-2 ... Address sent, NACK received
-3 ... Data send, NACK received
-4 ... Other error (lost bus arbitration, bus error, etc.)
-5 ... Timed-out while trying to become Bus Master
-6 ... Timed-out while waiting for data to be sent
+0 ... Success (no error)  
+1 ... Buffer overflow  
+2 ... Address sent, NACK received  
+3 ... Data send, NACK received  
+4 ... Other error (lost bus arbitration, bus error, etc.)  
+5 ... Timed-out while trying to become Bus Master  
+6 ... Timed-out while waiting for data to be sent  
 
 
 ## RUNNING THE EXAMPLE SKETCH
