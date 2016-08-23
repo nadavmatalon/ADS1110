@@ -228,7 +228,7 @@ in the readings based on the input voltage).
 
 ## BUG REPORTS
 
-Please report any issues/bugs/suggestions at the (Issues)[https://github.com/nadavmatalon/ADS1110/issues] section of this Github repository.
+Please report any issues/bugs/suggestions at the [Issues](https://github.com/nadavmatalon/ADS1110/issues) section of this Github repository.
 
 
 ## LICENSE
