@@ -4,30 +4,33 @@
 The __ADS1110__ is a 16-Bit Single-Channel (Single-Ended or Differential) ADC IC with Onboard Reference (2.048V), PGA & HW I2C capabilities
 in a SOT-23-6 package.
 
-This library contains a driver for the ADS1110 offering control over all its Configuration Settings and giving the user the 
-ability to recieve either raw data, a voltage reading or a percentage reading from the device either in Single-Shot or Continuous mode.
+This library contains a complete driver for the ADS1110 offering full control over its Configuration Settings, as well as the ability 
+to recieve raw data, voltage readings (in mV, to avoid floating point caclulations) or percentage readings in either Single-Shot or 
+Continuous mode.
 
 
 ## Repository Contents
 
-* **ADS1110.h** - Header file of the library.
-* **ADS1110.cpp** - Compilation file of the library.
-* **/examples** - Contains an example sketch for testing all Configuration Settings & Modes of Operation controllable by the library.
+* **ADS1110.h** - Header file of the library
+* **ADS1110.cpp** - Compilation file of the library
+* **/examples** - Contains a simple testing sketch to verify that the ic is working correctly, and an example sketch which illustrates usage 
+of all the Configuration Settings & Reading Methods provided by the library.
 * **/extras** - Complementary documentation (End-User License, etc.)
-* **keywords.txt** - Keywords for this library which will be highlighted in sketches within the Arduino IDE. 
+* **keywords.txt** - Keywords for this library which will be highlighted in sketches written in the Arduino IDE. 
 * **library.properties** - General library properties for the Arduino package manager.
 * **README.md** - The readme file for this library.
-* **library.json** - JSON file for the Arduino package manager.
+* **library.json** - JSON file for the Arduino package manager (Ver.>1.5).
 
 
 ## HOOK-UP
 
-* __PIN 1__ - Connect __V+__ to voltage source to be measured.
-* __PIN 2__ - Connect __GND__ to Arduino GND.
-* __PIN 3__ - Connect __SCL__ to Arduino PIN A5 with a 2K2 pull-up resistor.
-* __PIN 4__ - Conntect __SDA__ to Arduino PIN A4 with a 2K2 pull-up resistor.
-* __PIN 5__ - Connect __VCC__ to Arduino 5V output.
-* __PIN 6__ - Connect __V-__ either to: (1) Arduino GND (for Single-Ended voltage readings ranging 0-2.048V); or to (2) an external voltage reference of 2.048V (for Single-Ended voltage readings ranging 0-4.096V); or to (3) A 'negative' input (for differential voltage readings between positive and 'negative' inputs).
+* PIN 1 - Connect Vin+ to voltage source to be measured
+* PIN 2 - Connect GND to Arduino GND
+* PIN 3 - Connect SCL to Arduino PIN A5 with a 2K2 pull-up resistor
+* PIN 4 - Conntect SDA to Arduino PIN A4 with a 2K2 pull-up resistor
+* PIN 5 - Connect VCC to Arduino 5V output
+* PIN 6 - Connect Vin- either to Arduino GND (for Single-Ended voltage readings ranging 0-2.048V) or to an external 2.048V reference source 
+(for Single-Ended voltage readings ranging 0-4.096V) or to 'negative' input (for differential voltage readings between positive and 'negative' inputs).
 
 >__Note__: The 'negative' input is put in brackets here because it isn't a 'real' negative voltage - 
 i.e. with relation to the circuit's common ground - only with relation to the positive input side!
@@ -71,7 +74,7 @@ on the package itself):
 
 ## LIBRARY INSTALLATION & SETUP
 
-Begin by installing the library either by using the Arduino IDE's Installation Wizard (Arduino Version >1.5) or simply download the library's ZIP folder from GITHUB, extract it, and copy the extraxcted folder to your Arduino 'libraries' folder.
+Begin by installing the library either by using the Arduino IDE's Installation Wizard (Arduino IDE >1.5) or simply download the library's ZIP folder from this GITHUB repository, extract it, and copy the extraxcted folder to your Arduino 'libraries' folder.
 
 Next, include the library at the top of the sketch as follows:
 
@@ -92,70 +95,105 @@ the specific I2C address of your device - see I2C ADDRESSES section above.
 ## LIBRARY FUNCTIONS
 
 With the library installed & included in the sketch, and an ADS1110 object initiallized, the following functions are available 
-(see the sketch itself for actual examples):
+(see the sketch itself for actual usage examples):
 
 __ping();__                                  
 Parameters: None  
-Description: Searches for the ADS1110 at the defined I2C Bus address  
-Returns: Byte containing the relevant success/error code as follows:  
+Description: Searches the I2C Bus for the device at the pre-defined address 
+Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)
 
-0 ... Success (no error)  
-1 ... Buffer overflow  
-2 ... Address sent, NACK received  
-3 ... Data send, NACK received  
-4 ... Other error (lost bus arbitration, bus error, etc.)  
-5 ... Timed-out while trying to become Bus Master  
-6 ... Timed-out while waiting for data to be sent
+__getGain();__
+Parameters: None
+Description: Gets the current Gain settings
+Returns: Byte (1 / 2 / 4 / 8)
 
-__configInfo();__  
-Parameters: None.  
-Description: Returns a printable String with the device's I2C address & current Configuration Settings (Gain, Sample Rate & Mode)  
+__setGain();__
+Parameters: GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8
+Description: Sets the Gain (x1 / x2 / x4 / x8; Default: x1)
+Returns: None
+
+__getRate();__
+Parameters: None
+Description: Gets the current Sample Rate settings
+Returns: Byte (15 / 30 / 60 / 240)
+
+__setRate();__
+Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240
+Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second; Default: 15_SPS)
+Returns: None
+
+__getMode();__
+Parameters: None
+Description: Gets the current Conversion Mode settings
+Returns: Byte (0 = Continuous / 1 = Single-Shot)
+
+__setMode();__
+Parameters: CONT / SINGLE
+Description: Sets the Conversion Mode (Continuous / Single-Shot; Default: Continuous)
+Returns: None
+
+__getRes();__
+Parameters: None
+Description: Gets the current Resolution settings
+Returns: Byte (12 / 14 / 15 / 16)
+
+__setRes();__
+Parameters: 12_BIT / 14_BIT / 15_BIT / 16_BIT
+Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT; Default: 16-BIT)
+Returns: None
+
+__getVref();__           
+Parameters: None
+Description: Gets the current Voltage Reference mode (INTERNAL / EXTERNAL, Default: INTERNAL)
+Returns: Int (0 / 2048)
+
+__setVref();__           
+Parameters: INT_REF / EXT_REF
+This setting needs to be set according to the hardware hookup of the ADS1110 Pin Vin-, namely:
+If the Vin- pin is connected to GND, then the Voltage Reference (Vref) should be set to 'INTERNAL'. 
+This, in turn, provides a voltage reading range of 0-2048mV. Alternatively, the Vin- pin may be 
+connected to an external 2.048V source, in which case the Voltage Referece settings should be set 
+to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.
+Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)
+Returns: None
+
+__reset();__ 
+Parameters: None
+Description: Resets the Configuration register to its default settings
+Returns: None
+
+__getData();__           
+Parameters: None
+Description: Gets the latest raw ADC reading
+Returns: int
+
+__getVolt();__
+Parameters: None
+Description: Gets the latest ADC reading in mV
+Returns: int
+
+__getPercent();__
+Parameters: None
+Description: Gets the latest ADC reading in Percentage (0-100%) format
+Returns: byte (0 - 100)
+
+__singleCon();__
+Parameters: None
+Description: Initiates a single conversion and returns the ADC reading
+Returns: int
+
+__getComResult();__
+Paramters: None
+Description: Gets the result of the latest I2C communication with the device
+Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)
+
+__configStr();__
+Parameters: None
+Description: Generates a printable String with all current Configuration Settings
 Returns: String
 
-__setGain();__  
-Parameters: GAIN_1 / GAIN_2 / GAIN_4 / GAIN_8  
-Description: Sets the Gain of the ADS1110 (i.e. 1 / 2 / 4 / 8)  
-Default: GAIN_1  
-Returns: Byte containing the relevant success/error code (see list above)
-
-__setRate();__  
-Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240  
-Description: Sets the Sample Rate of the ADS1110 (i.e. 15 / 30 / 60 / 240 Samples per Second)  
-Default: 15_SPS  
-Returns: Byte containing the relevant success/error code (see list above)
-
-__setMode ();__  
-Parameters: CONTINUOUS / SINGLE_SHOT  
-Description: Sets the device's Mode of Operation (i.e. Continuous Conversions/Single Conversion)  
-Default: CONTINUOUS  
-Returns: Byte containing the relevant success/error code (see list above)
-
-__reset();__  
-Parameters: None  
-Description: Resets the ADS1110 to its default Configuration Settings (namely: GAIN_1, 15_SPS, CONTINUOUS)  
-Returns: Byte containing the relevant success/error code (see list above)
-
-__singleCon();__  
-Parameters: None  
-Conditions: Works only in __SINGLE CONVERSION__ mode  
-Description: Obtains the result of a single conversion  
-Returns: Int with actual value if successful or -1 if error occured  
-
-__readData();__  
-Parameters: None  
-Description: Obtains the latest conversion result from the ADS1110  
-Returns: Int witg actual value if successful or -1 if error occured   
-
-__readVoltage();__  
-Parameters: None  
-Returns: Obtains the latest conversion result translated into Volts  
-Returns: Float with actual value if successful or -1 if error occured    
-
-__readPercentage();__  
-Parameters: None  
-Description: Obtains the latest conversion result translated into Percentage (0-100%)  
-Returns: Int with actual value if successful or -1 if error occured 
-
+NOTE: The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
+cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT)
 
 And, lastly, if for whatever reason you wish to destruct an existing ADS1110 object, you can use the following line to do so:
 
@@ -164,14 +202,25 @@ And, lastly, if for whatever reason you wish to destruct an existing ADS1110 obj
 ```
 
 
+## I2C COMMUNICATION RESULT CODES
+
+0 ... Success (no error)
+1 ... Buffer overflow
+2 ... Address sent, NACK received
+3 ... Data send, NACK received
+4 ... Other error (lost bus arbitration, bus error, etc.)
+5 ... Timed-out while trying to become Bus Master
+6 ... Timed-out while waiting for data to be sent
+
+
 ## RUNNING THE EXAMPLE SKETCH
 
 1) Hook-up the ADS1110 to the Arduino as explained above.
-2) If you like, connect a 10K potentiometer to the ADS1110 V+ PIN (potentimeter's first pin goes to GND, 
+2) If you like, connect a 10K potentiometer to the ADS1110 V+ PIN (the pot's first pin goes to GND, 
 middle pin to V+, and third pin to 5V).
 3) Upload the sketch to the Arduino.
 4) Open the Serial Communications Window (make sure the baud-rate is set to 9600).
-5) You should be able to see detailed feedback from running each of the possible functions of the library 
+5) You should be able to see detailed feedback from running each of the possible methods of the library 
 (when you get to the part where readings are carried out, play with the potentiomer to check out changes 
 in the readings based on the input voltage).
 

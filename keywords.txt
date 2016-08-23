@@ -27,8 +27,8 @@ getMode	KEYWORD2
 setMode	KEYWORD2
 getRes	KEYWORD2
 setRes	KEYWORD2
-getVneg	KEYWORD2
-setVneg	KEYWORD2
+getVref	KEYWORD2
+setVref	KEYWORD2
 reset	KEYWORD2
 getData	KEYWORD2
 getVolt	KEYWORD2
