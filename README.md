@@ -150,12 +150,12 @@ Returns: Int (0 / 2048)
   
 __setVref();__  
 Parameters: INT_REF / EXT_REF  
+Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)  
 This setting needs to be set according to the hardware hookup of the ADS1110 Pin Vin-, namely:
 If the Vin- pin is connected to GND, then the Voltage Reference (Vref) should be set to 'INTERNAL'. 
 This, in turn, provides a voltage reading range of 0-2048mV. Alternatively, the Vin- pin may be 
 connected to an external 2.048V source, in which case the Voltage Referece settings should be set 
 to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.  
-Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)  
 Returns: None  
   
 __reset();__  
