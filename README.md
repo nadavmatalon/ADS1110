@@ -106,41 +106,41 @@ Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Re
 __getGain();__  
 Parameters: None  
 Description: Gets the current Gain settings  
-Returns: Byte (1 / 2 / 4 / 8)  
+Returns: Byte (1 / 2 / 4 / 8, Default: x1)  
   
 __setGain();__  
 Parameters: GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8  
-Description: Sets the Gain (x1 / x2 / x4 / x8; Default: x1)  
+Description: Sets the Gain (x1 / x2 / x4 / x8)  
 Returns: None  
   
 __getRate();__  
 Parameters: None  
 Description: Gets the current Sample Rate settings  
-Returns: Byte (15 / 30 / 60 / 240)  
+Returns: Byte (15 / 30 / 60 / 240, Default: 15 SPS)  
   
 __setRate();__  
 Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240  
-Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second; Default: 15_SPS)  
+Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second)  
 Returns: None  
   
 __getMode();__  
 Parameters: None  
 Description: Gets the current Conversion Mode settings  
-Returns: Byte (0 = Continuous / 1 = Single-Shot)  
+Returns: Byte (0 = Continuous / 1 = Single-Shot, Default: Continuous)  
   
 __setMode();__  
 Parameters: CONT / SINGLE  
-Description: Sets the Conversion Mode (Continuous / Single-Shot; Default: Continuous)  
+Description: Sets the Conversion Mode (Continuous / Single-Shot)  
 Returns: None  
   
 __getRes();__  
 Parameters: None  
 Description: Gets the current Resolution settings  
-Returns: Byte (12 / 14 / 15 / 16)  
+Returns: Byte (12 / 14 / 15 / 16, Default: 16-BIT)  
   
 __setRes();__  
 Parameters: 12_BIT / 14_BIT / 15_BIT / 16_BIT  
-Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT; Default: 16-BIT)  
+Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT)  
 Returns: None  
   
 __getVref();__         
@@ -193,8 +193,10 @@ Parameters: None
 Description: Generates a printable String with all current Configuration Settings  
 Returns: String  
 
->__NOTE:__ The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
-cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT)
+__IMPORTANT:__ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection & INTERNAL definition).  
+
+__NOTE:__ The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically 
+cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT).
 
 And, lastly, if for whatever reason you wish to destruct an existing ADS1110 object, you can use the following line to do so:
 
