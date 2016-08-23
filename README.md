@@ -40,19 +40,20 @@ i.e. with relation to the circuit's common ground - only with relation to the po
 
 ## I2C COMMUNICATION
 
->__INPORTANT__: This library uses the '[WSWire](https://github.com/steamfire/WSWireLib/tree/master/Library/WSWire)' library for I2C communication 
+__INPORTANT__: This library uses the '[WSWire](https://github.com/steamfire/WSWireLib/tree/master/Library/WSWire)' library for I2C communication 
 between the contoller IC (Master) and thethe ADS1110 (Slave), so it is NECESSARY to have it installed prior to using the current libraty. 
->
->Alternatively, if you wish to use the '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' - or any other I2C library for that matter - simply change the following line the the 'ADS1110.h' file:
+
+Alternatively, if you wish to use the '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' - or any other I2C library for that matter - simply change the following line the the 'ADS1110.h' file:
+
 ```
 #include <WSWire.h>
 ```
-> to this:
+to this:
 ```
 #include <Wire.h>  // or to whatever I2C library name you are using.
 ```
 
-> As noted above, whichever library you intend to use for this purpose __must be alredy installed__ for the ADS1110 library to work.
+As noted above, whichever library you intend to use for this purpose __must be alredy installed__ for the ADS1110 library to work.
 
 
 ## I2C ADDRESSES
@@ -97,102 +98,102 @@ the specific I2C address of your device - see I2C ADDRESSES section above.
 With the library installed & included in the sketch, and an ADS1110 object initiallized, the following functions are available 
 (see the sketch itself for actual usage examples):
 
-__ping();__                                  
+__ping();__                                    
 Parameters: None  
-Description: Searches the I2C Bus for the device at the pre-defined address 
-Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)
-
-__getGain();__
-Parameters: None
-Description: Gets the current Gain settings
-Returns: Byte (1 / 2 / 4 / 8)
-
-__setGain();__
-Parameters: GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8
-Description: Sets the Gain (x1 / x2 / x4 / x8; Default: x1)
-Returns: None
-
-__getRate();__
-Parameters: None
-Description: Gets the current Sample Rate settings
-Returns: Byte (15 / 30 / 60 / 240)
-
-__setRate();__
-Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240
-Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second; Default: 15_SPS)
-Returns: None
-
-__getMode();__
-Parameters: None
-Description: Gets the current Conversion Mode settings
-Returns: Byte (0 = Continuous / 1 = Single-Shot)
-
-__setMode();__
-Parameters: CONT / SINGLE
-Description: Sets the Conversion Mode (Continuous / Single-Shot; Default: Continuous)
-Returns: None
-
-__getRes();__
-Parameters: None
-Description: Gets the current Resolution settings
-Returns: Byte (12 / 14 / 15 / 16)
-
-__setRes();__
-Parameters: 12_BIT / 14_BIT / 15_BIT / 16_BIT
-Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT; Default: 16-BIT)
-Returns: None
-
-__getVref();__           
-Parameters: None
-Description: Gets the current Voltage Reference mode (INTERNAL / EXTERNAL, Default: INTERNAL)
-Returns: Int (0 / 2048)
-
-__setVref();__           
-Parameters: INT_REF / EXT_REF
+Description: Searches the I2C Bus for the device at the pre-defined address  
+Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)  
+  
+__getGain();__  
+Parameters: None  
+Description: Gets the current Gain settings  
+Returns: Byte (1 / 2 / 4 / 8)  
+  
+__setGain();__  
+Parameters: GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8  
+Description: Sets the Gain (x1 / x2 / x4 / x8; Default: x1)  
+Returns: None  
+  
+__getRate();__  
+Parameters: None  
+Description: Gets the current Sample Rate settings  
+Returns: Byte (15 / 30 / 60 / 240)  
+  
+__setRate();__  
+Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240  
+Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second; Default: 15_SPS)  
+Returns: None  
+  
+__getMode();__  
+Parameters: None  
+Description: Gets the current Conversion Mode settings  
+Returns: Byte (0 = Continuous / 1 = Single-Shot)  
+  
+__setMode();__  
+Parameters: CONT / SINGLE  
+Description: Sets the Conversion Mode (Continuous / Single-Shot; Default: Continuous)  
+Returns: None  
+  
+__getRes();__  
+Parameters: None  
+Description: Gets the current Resolution settings  
+Returns: Byte (12 / 14 / 15 / 16)  
+  
+__setRes();__  
+Parameters: 12_BIT / 14_BIT / 15_BIT / 16_BIT  
+Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT; Default: 16-BIT)  
+Returns: None  
+  
+__getVref();__         
+Parameters: None  
+Description: Gets the current Voltage Reference mode (INTERNAL / EXTERNAL, Default: INTERNAL)  
+Returns: Int (0 / 2048)  
+  
+__setVref();__  
+Parameters: INT_REF / EXT_REF  
 This setting needs to be set according to the hardware hookup of the ADS1110 Pin Vin-, namely:
 If the Vin- pin is connected to GND, then the Voltage Reference (Vref) should be set to 'INTERNAL'. 
 This, in turn, provides a voltage reading range of 0-2048mV. Alternatively, the Vin- pin may be 
 connected to an external 2.048V source, in which case the Voltage Referece settings should be set 
-to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.
-Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)
-Returns: None
+to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.  
+Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)  
+Returns: None  
+  
+__reset();__  
+Parameters: None  
+Description: Resets the Configuration register to its default settings  
+Returns: None  
+  
+__getData();__  
+Parameters: None  
+Description: Gets the latest raw ADC reading  
+Returns: Int  
+  
+__getVolt();__  
+Parameters: None  
+Description: Gets the latest ADC reading (in mV, to avoid floating point calculations)  
+Returns: Int  
+  
+__getPercent();__  
+Parameters: None  
+Description: Gets the latest ADC reading in Percentage (0-100%) format  
+Returns: Byte (0 - 100)  
 
-__reset();__ 
-Parameters: None
-Description: Resets the Configuration register to its default settings
-Returns: None
+__singleCon();__  
+Parameters: None  
+Description: Initiates a single conversion and returns the ADC reading  
+Returns: Int  
+  
+__getComResult();__  
+Paramters: None  
+Description: Gets the result of the latest I2C communication with the device  
+Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)  
+  
+__configStr();__  
+Parameters: None  
+Description: Generates a printable String with all current Configuration Settings  
+Returns: String  
 
-__getData();__           
-Parameters: None
-Description: Gets the latest raw ADC reading
-Returns: int
-
-__getVolt();__
-Parameters: None
-Description: Gets the latest ADC reading in mV
-Returns: int
-
-__getPercent();__
-Parameters: None
-Description: Gets the latest ADC reading in Percentage (0-100%) format
-Returns: byte (0 - 100)
-
-__singleCon();__
-Parameters: None
-Description: Initiates a single conversion and returns the ADC reading
-Returns: int
-
-__getComResult();__
-Paramters: None
-Description: Gets the result of the latest I2C communication with the device
-Returns: Byte (0 = Success / 1-6 = Error Code: see Section 'I2C Communication Result Codes' below)
-
-__configStr();__
-Parameters: None
-Description: Generates a printable String with all current Configuration Settings
-Returns: String
-
-NOTE: The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
+__NOTE:__ The ADS1110's Sample Rate and Resolution settings are interdependent, that is, setting the value of either will automatically 
 cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT)
 
 And, lastly, if for whatever reason you wish to destruct an existing ADS1110 object, you can use the following line to do so:
