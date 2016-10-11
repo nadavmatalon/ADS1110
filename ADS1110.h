@@ -119,13 +119,14 @@
 #ifndef ADS1110_h
 #define ADS1110_h
 
-#if defined(ARDUINO_ARCH_AVR)
 #include <Arduino.h>
 #include "WSWire.h"
 #include "utility/PString.h"
-#else
-#error “The ADS1110 library only supports AVR processors.”
+
+#if !defined(ARDUINO_ARCH_AVR)
+    #error “The ADS1110 library only supports AVR processors.”
 #endif
+
 
 const byte DEFAULT_SETTINGS = 0x8C;      // B10001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
 const byte START_CONVERSION = 0x80;      // B10000000 (For 'Single-Shot' Mode Only)
