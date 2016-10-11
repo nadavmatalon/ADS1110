@@ -45,10 +45,7 @@
     POWER-UP DEFAULTS
 *===============================================================================================================*
 
-    CONFIG BYTE:        B00000000
-    ALERT OUTPUT TYPE:  COMPARATOR
-    ALERT OUTPUT MODE:  ACTIVE-LOW
-    FAULT-QUEUE:        1 FAULT
+    CONFIG BYTE:        B________
     RESOLUTION:         9-BIT
     CONVERSION MODE:    CONTINUOUS
 
