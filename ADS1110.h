@@ -200,7 +200,6 @@ class ADS1110 {
         byte   getPercent();
         int    singleCon();
         byte   getComResult();
-
     private:
         int    _devAddr;
         byte   _config;
@@ -209,6 +208,7 @@ class ADS1110 {
         byte   getConfig();
         void   setConfig(byte newConfig);
         byte   findMinCode(sample_rate_t sampleRate);
+        double mapf(double x, double in_min, double in_max, double out_min, double out_max);
         void   initCall(byte data);
         void   endCall();
         void   emptyBuffer();

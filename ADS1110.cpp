@@ -217,18 +217,22 @@ int ADS1110::getData() {
 // Vin+ = 0 - 4096mV when Pin Vin- (=_Vref) is connected to an external 2.048V reference source
 
 int ADS1110::getVolt() {
-    byte gain    = (1 << (_config & GAIN_MASK));
+    byte gain = (1 << (_config & GAIN_MASK));
     byte minCode = findMinCode(_config & SPS_MASK);
     return (round((float)getData() / (float)(minCode * gain)) + _vref);
 }
 
 /*==============================================================================================================*
-    GET PERCENTAGE (0-100%) (SINGLE-ENDED READING ONLY)
+    GET PERCENTAGE (0-100%)
  *==============================================================================================================*/
 
+//add gain calculation
+
+
 byte ADS1110::getPercent() {
-    float upperLimit = (findMinCode(_config & SPS_MASK) << 11) - 1;
-    return round(getData() * 100.0 / upperLimit);
+    int lowerLimit = (findMinCode(_config & SPS_MASK) << 11) * -1;
+    int upperLimit = (findMinCode(_config & SPS_MASK) << 11) - 1;
+    return round(mapf(getData(), lowerLimit, upperLimit, 0, 100));
 }
 
 /*==============================================================================================================*
@@ -243,11 +247,11 @@ int ADS1110::singleCon() {
 }
 
 /*==============================================================================================================*
-    GET COMMUNICATION RESULT
+    MAP FLOATING POINT HELPER FUNCTION (FOR PERCENT CALCULATION)
  *==============================================================================================================*/
 
-byte ADS1110::getComResult() {
-    return _comBuffer;
+double ADS1110::mapf(double val, double in_min, double in_max, double out_min, double out_max) {
+    return ((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
 /*==============================================================================================================*
@@ -278,6 +282,14 @@ void ADS1110::initCall(byte data) {
 
 void ADS1110::endCall() {
     _comBuffer = Wire.endTransmission();
+}
+
+/*==============================================================================================================*
+    GET COMMUNICATION RESULT
+ *==============================================================================================================*/
+
+byte ADS1110::getComResult() {
+    return _comBuffer;
 }
 
 /*==============================================================================================================*
