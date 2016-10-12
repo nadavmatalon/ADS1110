@@ -226,9 +226,6 @@ int ADS1110::getVolt() {
     GET PERCENTAGE (0-100%)
  *==============================================================================================================*/
 
-//add gain calculation
-
-
 byte ADS1110::getPercent() {
     int lowerLimit = (findMinCode(_config & SPS_MASK) << 11) * -1;
     int upperLimit = (findMinCode(_config & SPS_MASK) << 11) - 1;
@@ -240,10 +237,30 @@ byte ADS1110::getPercent() {
  *==============================================================================================================*/
 
 int ADS1110::singleCon() {
-    initCall(START_CONVERSION);
-    endCall();
-    delayMicroseconds(MIN_CON_TIME);         // change to match different resolutions
-    return getData();
+    byte attemptCount, configByte;
+    int  rawData, conResult;
+    if (getConMode() == SINGLE) {                               // check if device is in 'SINGLE-SHOT' mode
+        initCall(START_CONVERSION & _config);                   // issue start conversion command
+        endCall();                                              // send out start conversion command
+        delay(MIN_CON_TIME * findMinCode(_config & SPS_MASK));  // wait for conversion to complete
+        while (attemptCount < MAX_NUM_ATTEMPTS) {               // make a maximum of 3 attempts to get new data
+            Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
+            if (Wire.available() == NUM_BYTES) {                // check if 3 bytes were recieved
+                rawData = Wire.read() << 8 | Wire.read();       // read data register
+                configByte = Wire.read();                       // read config register
+                if (bitRead(configByte, 7)) {                   // check if new data is available (0 = yes; 1 = no)
+                    delay(MIN_CON_TIME);                        // if not available, wait a bit longer
+                    attemptCount++;                             // itterate numbdf of attemps counter
+                } else attemptCount = MAX_NUM_ATTEMPTS;         // if new data available, exit while loop
+            } else {                                            // if request for 3 bytes failed...
+                emptyBuffer();                                  // empty I2C buffer
+                _comBuffer = ping();                            // get I2C error code to understand what went wrong
+                attemptCount = MAX_NUM_ATTEMPTS;                // exit while loop
+            }
+        }
+        conResult = rawData;                                    // if operation successful, get conversion result
+    }                                                           // (if operation unsuccessufl, returns 0)
+    return conResult;                                           // return conversion result
 }
 
 /*==============================================================================================================*
