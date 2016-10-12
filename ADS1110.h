@@ -45,8 +45,12 @@
     POWER-UP DEFAULTS
 *===============================================================================================================*
 
-    CONFIG BYTE:        B________
-    RESOLUTION:         9-BIT
+    // The ADS1110 Resets itself to the default configuration settings on each power-up
+ 
+    CONFIG BYTE:        B10001100
+    GAIN:               x1
+    SAMPLE RATE:        15 SPS
+    RESOLUTION:         16-BIT
     CONVERSION MODE:    CONTINUOUS
 
 *===============================================================================================================*
@@ -77,7 +81,7 @@
     BIT 7 (READ): DATA STATUS (ST) - NOT IMPLEMENTED
 
     NEW_DATA         0x00           New data ready to be read       B00000000
-    NO_DATA          0x80           No new data avialable           B10000000 (Default)
+    NO_DATA          0x80           No new data avialable yet       B10000000 (Default)
 
     BIT 7 (WRITE): START CONVERSION (DRDY)
 
@@ -87,10 +91,10 @@
     MINIMAL DATA VALUES (BASED ON SAMPLE RATE)
 *===============================================================================================================*
 
-    MIN_CODE_15    0x01     -1 * Minimum data value for 15  / 2048 (16-Bit)
-    MIN_CODE_30    0x04     -1 * Minimum data value for 30  / 2048 (15-Bit)
-    MIN_CODE_60    0x08     -1 * Minimum data value for 60  / 2048 (14-Bit)
-    MIN_CODE_240   0x10     -1 * Minimum data value for 240 / 2048 (12-Bit)
+    MIN_CODE_15      0x01     -1 * Minimum data value for 15  / 2048 (16-Bit)
+    MIN_CODE_30      0x04     -1 * Minimum data value for 30  / 2048 (15-Bit)
+    MIN_CODE_60      0x08     -1 * Minimum data value for 60  / 2048 (14-Bit)
+    MIN_CODE_240     0x10     -1 * Minimum data value for 240 / 2048 (12-Bit)
 
 *===============================================================================================================*
     LICENSE
@@ -119,41 +123,42 @@
 #ifndef ADS1110_h
 #define ADS1110_h
 
-#include <Arduino.h>
-#include "WSWire.h"
-#include "utility/PString.h"
-
 #if !defined(ARDUINO_ARCH_AVR)
     #error “The ADS1110 library only supports AVR processors.”
 #endif
 
+#include <Arduino.h>
+#include "WSWire.h"
+#include "utility/PString.h"
 
-const byte DEFAULT_SETTINGS = 0x8C;      // B10001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
-const byte START_CONVERSION = 0x80;      // B10000000 (For 'Single-Shot' Mode Only)
-const byte CONVERSION_TIME  =   70;      // ADC Comversion time (in mS)
+const byte DEFAULT_CONFIG   =   12;      // B00001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
+const byte DEFAULT_DATA     =    0;      // Default value of Raw Data registers
+const byte START_CONVERSION =  128;      // B10000000 (employed in 'Single-Shot' Conversion Mode)
+const byte COM_SUCCESS      =    0;      // I2C Communication Success (No Error)
+const int  MIN_CON_TIME     =  250;      // Minimum ADC Comversion time (in uS)
 const int  NUM_BYTES        =    3;      // Fixed number of bytes requested from the device
 
 typedef enum:byte {
-    GAIN_MASK = 0x03,      // B00000011
-    GAIN_1    = 0x00,      // B00000000 (Default)
-    GAIN_2    = 0x01,      // B00000001
-    GAIN_4    = 0x02,      // B00000010
-    GAIN_8    = 0x03       // B00000011
+    GAIN_MASK = 0x03,      // 3 - B00000011
+    GAIN_1    = 0x00,      // 0 - B00000000 (Default)
+    GAIN_2    = 0x01,      // 1 - B00000001
+    GAIN_4    = 0x02,      // 2 - B00000010
+    GAIN_8    = 0x03       // 3 - B00000011
 } gain_t;
 
 typedef enum:byte {
-    SPS_MASK = 0x0C,       // B00001100
+    SPS_MASK = 0x0C,       // 12 - B00001100
     SPS_15   = 0x0C,       // 12 - B00001100 (Default)
     SPS_30   = 0x08,       //  8 - B00001000
     SPS_60   = 0x04,       //  4 - B00000100
     SPS_240  = 0x00        //  0 - B00000000
-} rate_t;
+} sample_rate_t;
 
 typedef enum:byte {
-    MODE_MASK = 0x10,      // B00010000
-    CONT      = 0x00,      // B00000000 (Defualt)
-    SINGLE    = 0x10       // B00010000
-} mode_t;
+    CON_MODE_MASK = 0x10,  // B00010000
+    CONT          = 0x00,  // B00000000 (Defualt)
+    SINGLE        = 0x10   // B00010000
+} con_mode_t;
 
 typedef enum:byte {
     MIN_CODE_240 = 0x01,   //  1 - Minimal Data Value for 240_SPS / -2048  (12-BIT)
@@ -180,14 +185,14 @@ class ADS1110 {
         ~ADS1110();
         byte   ping();
         byte   getGain();
-        void   setGain(gain_t newGain);
-        byte   getRate();
-        void   setRate(rate_t newRate);
-        byte   getMode();
-        void   setMode(mode_t newMode);
+        byte   getSampleRate();
+        byte   getConMode();
         byte   getRes();
-        void   setRes(res_t newRes);
         int    getVref();
+        void   setGain(gain_t newGain);
+        void   setRate(sample_rate_t newRate);
+        void   setConMode(con_mode_t newMode);
+        void   setRes(res_t newRes);
         void   setVref(vref_t newVref);
         void   reset();
         int    getData();
@@ -195,18 +200,20 @@ class ADS1110 {
         byte   getPercent();
         int    singleCon();
         byte   getComResult();
-        String configStr();
+
     private:
         int    _devAddr;
-        byte   _comBuffer;
+        byte   _config;
         int    _vref;
+        byte   _comBuffer;
         byte   getConfig();
         void   setConfig(byte newConfig);
-        byte   findMinCode(byte sampleRate);
+        byte   findMinCode(sample_rate_t sampleRate);
         void   initCall(byte data);
         void   endCall();
-        byte   requestData();
         void   emptyBuffer();
+        friend PString ADS1110ComStr(const ADS1110&);
+        friend PString ADS1110InfoStr(const ADS1110&);
 };
 
 #endif
