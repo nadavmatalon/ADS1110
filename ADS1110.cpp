@@ -161,8 +161,8 @@ void ADS1110::setSampleRate(sample_rate_t newRate) {             // PARAMS: SPS_
     SET CONVERSION MODE
  *==============================================================================================================*/
 
-void ADS1110::setConMode(con_mode_t newMode) {                            // PARAMS: CONT / SINGLE
-    setConfig((_config & ~CON_MODE_MASK) | (newMode & CON_MODE_MASK));
+void ADS1110::setConMode(con_mode_t newConMode) {                            // PARAMS: CONT / SINGLE
+    setConfig(bitSet(_config, 4));
 }
 
 /*==============================================================================================================*
@@ -203,8 +203,8 @@ int ADS1110::getData() {
     byte attemptCount, devConfig;
     int  devData;
     if (bitRead(_config, 4)) {                                  // if device is in 'SINGLE-SHOT' mode...
-        initCall(_config | START_CONVERSION);  //check this     // issue start conversion command
-        endCall();                                              // send out start conversion command
+        initCall(_config | START_CONVERSION);                   // add start conversion command to config byte 
+        endCall();                                              // issue start conversion command
         delay(MIN_CON_TIME * findMinCode(_config & SPS_MASK));  // wait for conversion to complete
     }
     while (attemptCount < MAX_NUM_ATTEMPTS) {               // make up to 3 attempts to get new data
@@ -212,7 +212,7 @@ int ADS1110::getData() {
         if (Wire.available() == NUM_BYTES) {                // if 3 bytes were recieved...
             devData = Wire.read() << 8 | Wire.read();       // read data register
             devConfig = Wire.read();                        // read config register
-            if (bitRead(devConfig, 7)) {                    // check if new data available (0 = yes; 1 = not yet)
+            if (bitRead(devConfig, 7)) {                    // check if new data available...
                 delay(MIN_CON_TIME);                        // if not available yet, wait a bit longer
                 attemptCount++;                             // increment attemps count
             } else return devData;                          // if new data is available, return conversion result
@@ -229,12 +229,12 @@ int ADS1110::getData() {
     GET VOLTAGE (mV)
  *==============================================================================================================*/
 
-// Vin+ = (output_code / (my_min_code  * GAIN)) + _Vreg
-// Output_Code = raw data from device (int)
-// my_min_code = 16 (15_SPS; 16-BIT) / 8 (30_SPS; 15-BIT) / 4 (60_SPS; 14-BIT) / 1 (240_SPS; 12-BIT)
-// _Vref = Vin- (in mV, depends on whether Vin- is connected to GND or to a 2048mV reference source)
-// Vin+ = 0 - 2048mV when Pin Vin- (=_Vref) is connected to GND
-// Vin+ = 0 - 4096mV when Pin Vin- (=_Vref) is connected to an external 2.048V reference source
+    // Vin+ = (output_code / (my_min_code  * GAIN)) + _Vreg
+    // Output_Code = raw data from device (int)
+    // my_min_code = 16 (15_SPS; 16-BIT) / 8 (30_SPS; 15-BIT) / 4 (60_SPS; 14-BIT) / 1 (240_SPS; 12-BIT)
+    // _Vref = Vin- (in mV, depends on whether Vin- is connected to GND or to a 2048mV reference source)
+    // Vin+ = 0 - 2048mV when Pin Vin- (=_Vref) is connected to GND
+    // Vin+ = 0 - 4096mV when Pin Vin- (=_Vref) is connected to an external 2.048V reference source
 
 int ADS1110::getVolt() {
     byte gain = (1 << (_config & GAIN_MASK));

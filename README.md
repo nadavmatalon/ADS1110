@@ -44,7 +44,8 @@ This library contains a complete driver for the ADS1110 offering full control ov
 * __PIN 6 (Vin-)__ - Connect Vin- either to Arduino GND (for Single-Ended voltage readings ranging 0-2.048V) or to an external 2.048V reference source (for Single-Ended voltage readings ranging 0-4.096V) or to 'negative' input (for differential voltage readings between positive and 'negative' inputs).
 * __DECOUPING__: Connect a 0.1uF Ceramic Capacitor between the ADS1110's VCC &amp GND PINS
 
->__Note__: The 'negative' of input Vin- is put in brackets here because it isn't a so-called real negative voltage - that is, with relation to the circuit's common ground - rather it is negative only with relation to the positive input side Vin+.
+>__Note__: The 'negative' of input Vin- is put in brackets here because it actually differential in nature and not a so-called real negative voltage - 
+that is, it's negative only with relation to the positive input side of Vin+.
 
 ## GENERAL NOTES
 
@@ -132,104 +133,85 @@ Description:&nbsp;&nbsp;&nbsp;Searches for the ADS1110 at the pre-defined I2C Bu
 6 ... Timed-out while waiting for data to be sent
 >6 ... Unlisted error (potential future implementation/s)<br>
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byte  
-
-
-
-
-
-
-
+  
 __getGain();__  
-Parameters: None  
-Description: Gets the current Gain settings  
-Returns: Byte (1 / 2 / 4 / 8, Default: x1)  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the current Gain settings (x1 [Default] / x2 / x4 / x8)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Byte  
   
-__setGain();__  
-Parameters: GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8  
-Description: Sets the Gain (x1 / x2 / x4 / x8)  
-Returns: None  
+__getSampleRate();__  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the current Sample Rate settings  (15 SPS [Default] / 30 SPS / 60 SPS / 240 SPS)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Byte  
   
-__getRate();__  
-Parameters: None  
-Description: Gets the current Sample Rate settings  
-Returns: Byte (15 / 30 / 60 / 240, Default: 15 SPS)  
-  
-__setRate();__  
-Parameters: SPS_15 / SPS_30 / SPS_60 / SPS_240  
-Description: Sets the Sample Rate (15 / 30 / 60 / 240 Samples per Second)  
-Returns: None  
-  
-__getMode();__  
-Parameters: None  
-Description: Gets the current Conversion Mode settings  
-Returns: Byte (0 = Continuous / 1 = Single-Shot, Default: Continuous)  
-  
-__setMode();__  
-Parameters: CONT / SINGLE  
-Description: Sets the Conversion Mode (Continuous / Single-Shot)  
-Returns: None  
+__getConMode();__  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the current Conversion Mode settings (0 = CONTINUOUS [Default] / 1 = SINGLE-SHOT)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Byte  
   
 __getRes();__  
-Parameters: None  
-Description: Gets the current Resolution settings  
-Returns: Byte (12 / 14 / 15 / 16, Default: 16-BIT)  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the current Resolution settings (12-BIT / 14-BIT / 15-BIT / 16-BIT [Default])  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Byte  
+  
+__getVref();__  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the current Voltage Reference mode (0 = INTERNAL [Default] / 2048 = EXTERNAL)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Int  
+  
+__setGain();__  
+Parameters:&nbsp;&nbsp;&nbsp;GAIN_1 / GAIN_2 /GAIN_4 / GAIN_8  
+Description:&nbsp;&nbsp;&nbsp;Sets the Gain (x1 / x2 / x4 / x8)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
+  
+__setSampleRate();__  
+Parameters:&nbsp;&nbsp;&nbsp;SPS_15 / SPS_30 / SPS_60 / SPS_240  
+Description:&nbsp;&nbsp;&nbsp;Sets the Sample Rate in Samples per Second (15 SPS / 30 SPS / 60 SPS / 240 SPS)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
+  
+__setConMode();__  
+Parameters:&nbsp;&nbsp;&nbsp;CONT / SINGLE  
+Description:&nbsp;&nbsp;&nbsp;Sets the Conversion Mode (CONTINUOUS / SINGLE-SHOT)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
   
 __setRes();__  
-Parameters: 12_BIT / 14_BIT / 15_BIT / 16_BIT  
-Description: Sets the Resolution level ( 12 / 14 / 15 / 16-BIT)  
-Returns: None  
-  
-__getVref();__         
-Parameters: None  
-Description: Gets the current Voltage Reference mode (INTERNAL / EXTERNAL, Default: INTERNAL)  
-Returns: Int (0 / 2048)  
+Parameters:&nbsp;&nbsp;&nbsp;12_BIT / 14_BIT / 15_BIT / 16_BIT  
+Description:&nbsp;&nbsp;&nbsp;Sets the Resolution level ( 12-BIT / 14-BIT / 15-BIT / 16-BIT)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
   
 __setVref();__  
-Parameters: INT_REF / EXT_REF  
-Description: Sets the Voltage reference mode (INTERNAL / EXTERNAL)  
-This setting needs to be set according to the hardware hookup of the ADS1110 Pin Vin-, namely:
-If the Vin- pin is connected to GND, then the Voltage Reference (Vref) should be set to 'INTERNAL'. 
-This, in turn, provides a voltage reading range of 0-2048mV. Alternatively, the Vin- pin may be 
-connected to an external 2.048V source, in which case the Voltage Referece settings should be set 
-to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.  
-Returns: None  
+Parameters:&nbsp;&nbsp;&nbsp;INT_REF / EXT_REF  
+Description:&nbsp;&nbsp;&nbsp;Sets the Voltage reference mode (INTERNAL / EXTERNAL)  
+This setting needs to be set according to the hardware hookup of the ADS1110 Pin Vin-, namely: If the Vin- pin is connected to GND, then the Voltage Reference (Vref) should be set to 'INTERNAL'. This, in turn, provides a voltage reading range of 0-2048mV. Alternatively, the Vin- pin may be connected to an external 2.048V source, in which case the Voltage Referece settings should be set to 'EXTERNAL'. The latter hookup & setting gives an extended voltage reading range of 0-4096mV.  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
   
 __reset();__  
-Parameters: None  
-Description: Resets the Configuration register to its default settings  
-Returns: None  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Resets the Configuration register to its default settings  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;None  
   
 __getData();__  
-Parameters: None  
-Description: Gets the latest raw ADC reading  
-Returns: Int  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the latest raw ADC reading  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Int  
   
 __getVolt();__  
-Parameters: None  
-Description: Gets the latest ADC reading (in mV, to avoid floating point calculations)  
-Returns: Int  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the latest ADC reading (in mV, to avoid floating point calculations)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Int  
   
 __getPercent();__  
-Parameters: None  
-Description: Gets the latest ADC reading in Percentage (0-100%) format  
-Returns: Byte (0 - 100)  
-
-__singleCon();__  
-Parameters: None  
-Description: Initiates a single conversion and returns the ADC reading  
-Returns: Int  
+Parameters:&nbsp;&nbsp;&nbsp;None  
+Description:&nbsp;&nbsp;&nbsp;Gets the latest ADC reading in Percentage format (0-100%)  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Byte  
   
-
-
-
-
 __getComResult();__  
 Parameters:&nbsp;&nbsp;&nbsp;None  
 Description:&nbsp;&nbsp;Returns the latest I2C Communication result code (see Success/Error codes above)  
-Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byte
-
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byte  
+  
 __Destructor__  
-If you want to destruct an instantiated ADS1110 object, you can use the following method to do so:
+If you want to destruct an instantiated ADS1110 object, you can use the following method to do so:  
 
 ```
 ~ADS1110 device_name();
@@ -238,47 +220,43 @@ If you want to destruct an instantiated ADS1110 object, you can use the followin
 
 ## Extended Functionality*
 
-(* requires an additional '\#include' of the relevant *.h file as shown in the corresponding example sketches)
-
+(* requires an additional '\#include' of the relevant *.h file as shown in the corresponding example sketches)  
+  
 __ADS1110ComStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing human-friendly information about the device's latest I2C communication result  
-Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString
-
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
+  
 __ADS1110InfoStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
-Description:&nbsp;&nbsp;Returns printable string containing detailed information about the device's current settings   
-Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString
-
-
+Description:&nbsp;&nbsp;Returns printable string containing detailed information about the device's current settings  
+Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
+  
 >__IMPORTANT:__ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection & INTERNAL definition).  
-
+  
 >__NOTE:__ The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically 
-cause the other setting to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT).
-
-
+cause the other to change accordingly (15_SPS == 16-BIT / 30_SPS == 15-BIT / 60_SPS == 14-BIT / 240_SPS == 12-BIT).  
+  
 ## RUNNING THE EXAMPLE SKETCHES
-
-1) Hook-up the ADS1110 to the Arduino as explained above.   
+  
+1) Hook-up the ADS1110 to the Arduino as explained above.  
 2) Upload the relevant example sketch to the Arduino.  
 3) Open the Serial Communications Window (make sure the baud-rate is set to 9600 or change it in the sketch to match your Serial Port's buad-rate).  
-
-
+  
 ## BUG REPORTS
-
+  
 Please report any issues/bugs/suggestions at the [Issues](https://github.com/nadavmatalon/ADS1110/issues) section of this Github repository.
-
+  
 ## TODO
-
+  
 * __CORE LIBRARY__: Add running average functionality  
 * __ADS1110ComStr__: Move to independent Library  
-
+  
 ## VERSION HISTORY
 
 __Ver. 1.0.0__ - First release (26.9.16)  
 __Ver. 1.1.0__ -  (10.10.16)  
-
-
+  
 ## LICENSE
 
 [The MIT License (MIT)](https://opensource.org/licenses/MIT)

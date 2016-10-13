@@ -102,11 +102,11 @@ PString ADS1110InfoStr(const ADS1110& devParams) {
             ptr = (char *) pgm_read_word(&infoStrs[i]);
             if (i == 4)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (config >> 7)&1, (config >> 6)&1, (config >> 5)&1,
                                     (config >> 4)&1, (config >> 3)&1, (config >> 2)&1, (config >> 1)&1, config&1);
-            if (i == 5)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (((config & CON_MODE_MASK) >> 4) ? "STANDBY" : "ON"));
+            if (i == 5)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (bitRead(config, 4)) ? "STANDBY" : "ON");
             if (i == 6)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (1 << (config & GAIN_MASK)));
             if (i == 7)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, res);
             if (i == 8)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, rate);
-            if (i == 9)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (((config & CON_MODE_MASK) >> 4) ? "SINGLE-SHOT" : "CONTINUOUS"));
+            if (i == 9)  snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (bitRead(config, 4)) ? "SINGLE-SHOT" : "CONTINUOUS");
             if (i == 10) snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, ptr, (devParams._vref ? "EXTERNAL" : "INTERNAL"));
             resultStr += devInfoBuffer;
         }

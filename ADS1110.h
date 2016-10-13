@@ -156,7 +156,6 @@ typedef enum:byte {
 } sample_rate_t;
 
 typedef enum:byte {
-    CON_MODE_MASK = 0x10,  // B00010000
     CONT          = 0x00,  // B00000000 (Defualt)
     SINGLE        = 0x10   // B00010000
 } con_mode_t;
@@ -182,8 +181,7 @@ typedef enum:int {
 
 
 //---------------------
-// update keywords
-// update README
+// update version history README
 // update examples
 // update version (new release)
 //---------------------
@@ -200,7 +198,7 @@ class ADS1110 {
         int    getVref();
         void   setGain(gain_t newGain);
         void   setSampleRate(sample_rate_t newRate);
-        void   setConMode(con_mode_t newMode);
+        void   setConMode(con_mode_t newConMode);
         void   setRes(res_t newRes);
         void   setVref(vref_t newVref);
         void   reset();
