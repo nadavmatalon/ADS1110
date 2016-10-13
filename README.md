@@ -270,7 +270,8 @@ Please report any issues/bugs/suggestions at the [Issues](https://github.com/nad
 
 ## TODO
 
-
+* __CORE LIBRARY__: Add running average functionality  
+* __ADS1110ComStr__: Move to independent Library  
 
 ## VERSION HISTORY
 
