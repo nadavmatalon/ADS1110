@@ -65,23 +65,6 @@ byte ADS1110::ping() {
 }
 
 /*==============================================================================================================*
-    GET CONFIGURATION SETTINGS (FROM DEVICE)
- *==============================================================================================================*/
-
-byte ADS1110::getConfig() {
-    byte devConfig;
-    Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
-    if (Wire.available() == NUM_BYTES) {                // if 3 bytes were recieved...
-        for (byte i=2; i>0; i--) Wire.read();           // skip data register bytes
-        devConfig = Wire.read();                        // store device config byte
-    } else {                                            // if 3 bytes were not recieved...
-        emptyBuffer();                                  // empty I2C buffer
-        _comBuffer = ping();                            // store I2C error code to find out what went wrong
-    }
-    return devConfig;                                   // return device config byte
-}
-
-/*==============================================================================================================*
     GET GAIN (1 = GAIN x1 / 2 = GAIN x2 / 4 = GAIN x4 / 8 = GAIN x8)
  *==============================================================================================================*/
 
@@ -129,16 +112,6 @@ byte ADS1110::getRes() {
 
 int ADS1110::getVref() {
     return _vref;
-}
-
-/*==============================================================================================================*
-    SET CONFIGURATION REGISTER
- *==============================================================================================================*/
-
-void ADS1110::setConfig(byte newConfig) {
-    initCall(newConfig);
-    endCall();
-    if (_comBuffer == COM_SUCCESS) _config = newConfig;
 }
 
 /*==============================================================================================================*
@@ -253,11 +226,38 @@ byte ADS1110::getPercent() {
 }
 
 /*==============================================================================================================*
-    MAP FLOATING POINT HELPER FUNCTION (FOR PERCENT CALCULATION)
+    GET COMMUNICATION RESULT
  *==============================================================================================================*/
 
-double ADS1110::mapf(double val, double in_min, double in_max, double out_min, double out_max) {
-    return ((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+byte ADS1110::getComResult() {
+    return _comBuffer;
+}
+
+/*==============================================================================================================*
+    GET CONFIGURATION SETTINGS (FROM DEVICE)
+ *==============================================================================================================*/
+
+byte ADS1110::getConfig() {
+    byte devConfig;
+    Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
+    if (Wire.available() == NUM_BYTES) {                // if 3 bytes were recieved...
+        for (byte i=2; i>0; i--) Wire.read();           // skip data register bytes
+        devConfig = Wire.read();                        // store device config byte
+    } else {                                            // if 3 bytes were not recieved...
+        emptyBuffer();                                  // empty I2C buffer
+        _comBuffer = ping();                            // store I2C error code to find out what went wrong
+    }
+    return devConfig;                                   // return device config byte
+}
+
+/*==============================================================================================================*
+    SET CONFIGURATION REGISTER
+ *==============================================================================================================*/
+
+void ADS1110::setConfig(byte newConfig) {
+    initCall(newConfig);
+    endCall();
+    if (_comBuffer == COM_SUCCESS) _config = newConfig;
 }
 
 /*==============================================================================================================*
@@ -271,6 +271,14 @@ byte ADS1110::findMinCode(sample_rate_t sampleRate) {
         case (SPS_60) : return MIN_CODE_60;  break;
         case (SPS_240): return MIN_CODE_240; break;
     }
+}
+
+/*==============================================================================================================*
+    MAP FLOATING POINT HELPER FUNCTION (FOR PERCENT CALCULATION)
+ *==============================================================================================================*/
+
+double ADS1110::mapf(double val, double in_min, double in_max, double out_min, double out_max) {
+    return ((val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
 /*==============================================================================================================*
@@ -288,14 +296,6 @@ void ADS1110::initCall(byte data) {
 
 void ADS1110::endCall() {
     _comBuffer = Wire.endTransmission();
-}
-
-/*==============================================================================================================*
-    GET COMMUNICATION RESULT
- *==============================================================================================================*/
-
-byte ADS1110::getComResult() {
-    return _comBuffer;
 }
 
 /*==============================================================================================================*
