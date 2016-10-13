@@ -69,13 +69,16 @@ byte ADS1110::ping() {
  *==============================================================================================================*/
 
 byte ADS1110::getConfig() {
-    byte configByte;
-    Wire.requestFrom(_devAddr, NUM_BYTES);
-    if (Wire.available() == 3) {
-        for (byte i=2; i>0; i--) Wire.read();
-        configByte = Wire.read();
-    } else emptyBuffer();
-    return configByte;
+    byte devConfig;
+    Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
+    if (Wire.available() == NUM_BYTES) {                // if 3 bytes were recieved...
+        for (byte i=2; i>0; i--) Wire.read();           // skip data register bytes
+        devConfig = Wire.read();                        // store device config byte
+    } else {                                            // if 3 bytes were not recieved...
+        emptyBuffer();                                  // empty I2C buffer
+        _comBuffer = ping();                            // store I2C error code to find out what went wrong
+    }
+    return devConfig;                                   // return device config byte
 }
 
 /*==============================================================================================================*
@@ -104,7 +107,7 @@ byte ADS1110::getSampleRate() {
  *==============================================================================================================*/
 
 byte ADS1110::getConMode() {
-    return ((_config & CON_MODE_MASK) >> 4);
+    return bitRead(_config, 4);
 }
 
 /*==============================================================================================================*
@@ -150,7 +153,7 @@ void ADS1110::setGain(gain_t newGain) {                          // PARAMS: GAIN
     SET SAMPLE RATE (IN SAMPLES PER SECOND)
  *==============================================================================================================*/
 
-void ADS1110::setRate(sample_rate_t newRate) {                  // PARAMS: SPS_15 / SPS_30 / SPS_60 / SPS_240
+void ADS1110::setSampleRate(sample_rate_t newRate) {             // PARAMS: SPS_15 / SPS_30 / SPS_60 / SPS_240
     setConfig((_config & ~SPS_MASK) | (newRate & SPS_MASK));
 }
 
@@ -189,20 +192,37 @@ void ADS1110::setVref(vref_t newVref) {                         // PARAMS: INT_R
 
 void ADS1110::reset() {
     setConfig(DEFAULT_CONFIG);
+    _vref = INT_REF;
 }
 
 /*==============================================================================================================*
-    GET RAW DATA
+    GET DATA FROM DEVICE
  *==============================================================================================================*/
 
 int ADS1110::getData() {
-    int rawData;
-    Wire.requestFrom(_devAddr, NUM_BYTES);
-    if (Wire.available() == NUM_BYTES) {
-        rawData = Wire.read() << 8 | Wire.read();
-        Wire.read();
-    } else emptyBuffer();
-    return rawData;
+    byte attemptCount, devConfig;
+    int  devData;
+    if (bitRead(_config, 4)) {                                  // if device is in 'SINGLE-SHOT' mode...
+        initCall(_config | START_CONVERSION);  //check this     // issue start conversion command
+        endCall();                                              // send out start conversion command
+        delay(MIN_CON_TIME * findMinCode(_config & SPS_MASK));  // wait for conversion to complete
+    }
+    while (attemptCount < MAX_NUM_ATTEMPTS) {               // make up to 3 attempts to get new data
+        Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
+        if (Wire.available() == NUM_BYTES) {                // if 3 bytes were recieved...
+            devData = Wire.read() << 8 | Wire.read();       // read data register
+            devConfig = Wire.read();                        // read config register
+            if (bitRead(devConfig, 7)) {                    // check if new data available (0 = yes; 1 = not yet)
+                delay(MIN_CON_TIME);                        // if not available yet, wait a bit longer
+                attemptCount++;                             // increment attemps count
+            } else return devData;                          // if new data is available, return conversion result
+        } else {                                            // if 3 bytes were not recieved...
+            emptyBuffer();                                  // empty I2C buffer
+            _comBuffer = ping();                            // store I2C error code to find out what went wrong
+            attemptCount = MAX_NUM_ATTEMPTS;                // exit while loop
+        }
+    }
+    return devData;                                         // if operation unsuccessful, return 0
 }
 
 /*==============================================================================================================*
@@ -230,37 +250,6 @@ byte ADS1110::getPercent() {
     int lowerLimit = (findMinCode(_config & SPS_MASK) << 11) * -1;
     int upperLimit = (findMinCode(_config & SPS_MASK) << 11) - 1;
     return round(mapf(getData(), lowerLimit, upperLimit, 0, 100));
-}
-
-/*==============================================================================================================*
-    GET SINGLE CONVERSION READING (IN 'SINGLE-SHOT' MODE ONLY)
- *==============================================================================================================*/
-
-int ADS1110::singleCon() {
-    byte attemptCount, configByte;
-    int  rawData, conResult;
-    if (getConMode() == SINGLE) {                               // check if device is in 'SINGLE-SHOT' mode
-        initCall(START_CONVERSION & _config);                   // issue start conversion command
-        endCall();                                              // send out start conversion command
-        delay(MIN_CON_TIME * findMinCode(_config & SPS_MASK));  // wait for conversion to complete
-        while (attemptCount < MAX_NUM_ATTEMPTS) {               // make a maximum of 3 attempts to get new data
-            Wire.requestFrom(_devAddr, NUM_BYTES);              // request 3 bytes from device
-            if (Wire.available() == NUM_BYTES) {                // check if 3 bytes were recieved
-                rawData = Wire.read() << 8 | Wire.read();       // read data register
-                configByte = Wire.read();                       // read config register
-                if (bitRead(configByte, 7)) {                   // check if new data is available (0 = yes; 1 = no)
-                    delay(MIN_CON_TIME);                        // if not available, wait a bit longer
-                    attemptCount++;                             // itterate numbdf of attemps counter
-                } else attemptCount = MAX_NUM_ATTEMPTS;         // if new data available, exit while loop
-            } else {                                            // if request for 3 bytes failed...
-                emptyBuffer();                                  // empty I2C buffer
-                _comBuffer = ping();                            // get I2C error code to understand what went wrong
-                attemptCount = MAX_NUM_ATTEMPTS;                // exit while loop
-            }
-        }
-        conResult = rawData;                                    // if operation successful, get conversion result
-    }                                                           // (if operation unsuccessufl, returns 0)
-    return conResult;                                           // return conversion result
 }
 
 /*==============================================================================================================*

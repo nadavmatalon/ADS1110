@@ -176,9 +176,17 @@ typedef enum:byte {
 } res_t;
 
 typedef enum:int {
-    INT_REF =    0,        // Inernal Reference: Pin Vin- is connected to GND (Default)
+    INT_REF =    0,        // Inernal Reference:  Pin Vin- is connected to GND (Default)
     EXT_REF = 2048         // External Reference: Pin Vin- is connected to 2.048V source
 } vref_t;
+
+
+//---------------------
+// update keywords
+// update README
+// update examples
+// update version (new release)
+//---------------------
 
 class ADS1110 {
     public:
@@ -191,7 +199,7 @@ class ADS1110 {
         byte   getRes();
         int    getVref();
         void   setGain(gain_t newGain);
-        void   setRate(sample_rate_t newRate);
+        void   setSampleRate(sample_rate_t newRate);
         void   setConMode(con_mode_t newMode);
         void   setRes(res_t newRes);
         void   setVref(vref_t newVref);
@@ -199,7 +207,6 @@ class ADS1110 {
         int    getData();
         int    getVolt();
         byte   getPercent();
-        int    singleCon();
         byte   getComResult();
     private:
         int    _devAddr;
