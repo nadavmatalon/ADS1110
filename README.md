@@ -63,7 +63,7 @@ to this:
 ```
 As noted above, whichever library you intend to use for this purpose __must be alredy installed__ for the ADS1110 library to work.
 
-2) __ DANGERS OF GAIN SETTING__
+2) __DANGERS OF GAIN SETTING__
 
 As I've managed to fry 2 ADS1110 ICs by changing the GAIN settings from the default x1 to another value, I've decided to stay away from this particular setting and not to include it in the full usage/testing sketch. That said, the library does contain the relevant functions for getting/setting the GAIN, however, make sure you know what you're doing when fiddling with this as you may damage your device.
 
