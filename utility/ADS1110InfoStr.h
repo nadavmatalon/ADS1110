@@ -7,7 +7,7 @@
  A complemetary Device Information String Generator Debugging Function for the MCP9802 Library
  
  Ver. 1.0.0 - First release (26.9.16)
- Ver. 1.1.0 -
+ Ver. 1.1.0 - Major code refactoring (10.10.16)
  
  *===============================================================================================================*
  LICENSE

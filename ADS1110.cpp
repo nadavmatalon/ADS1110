@@ -9,7 +9,7 @@
     ADS1110 Driver (16-BIT Single Channel ADC with PGA and I2C Interface)
 
     Ver. 1.0.0 - First release (28.3.16)
-    Ver. 1.1.0 -  (10.10.16)
+    Ver. 1.1.0 - Major code refactoring (10.10.16)
 
 *===============================================================================================================*
     LICENSE

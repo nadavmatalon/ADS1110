@@ -9,7 +9,7 @@
     ADS1110 Driver (16-BIT Single Channel ADC with PGA and I2C Interface)
  
     Ver. 1.0.0 - First release (28.3.16)
-    Ver. 1.1.0 -  (10.10.16)
+    Ver. 1.1.0 - Major code refactoring (10.10.16)
 
 *===============================================================================================================*
     INTRODUCTION
@@ -78,7 +78,7 @@
 
     BITS 5 & 6: RESERVED
 
-    BIT 7 (READ): DATA STATUS (ST) - NOT IMPLEMENTED
+    BIT 7 (READ): DATA STATUS (ST)
 
     NEW_DATA         0x00           New data ready to be read       B00000000
     NO_DATA          0x80           No new data avialable yet       B10000000 (Default)
@@ -178,13 +178,6 @@ typedef enum:int {
     INT_REF =    0,        // Inernal Reference:  Pin Vin- is connected to GND (Default)
     EXT_REF = 2048         // External Reference: Pin Vin- is connected to 2.048V source
 } vref_t;
-
-
-//---------------------
-// update version history README
-// update examples
-// update version (new release)
-//---------------------
 
 class ADS1110 {
     public:

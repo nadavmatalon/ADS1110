@@ -7,7 +7,7 @@
     A complemetary I2C Communications Result String Generator for the ADS1110 Library
  
     Ver. 1.0.0 - First release (28.3.16)
-    Ver. 1.1.0 -  (10.10.16)
+    Ver. 1.1.0 - Major code refactoring (10.10.16)
 
 *===============================================================================================================*
     LICENSE
