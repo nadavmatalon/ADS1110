@@ -42,7 +42,7 @@ This library contains a complete driver for the ADS1110 offering full control ov
 * __PIN 4 (SDA)__ - Connect to the Arduino's PIN A5 with a 2K2 pull-up resistor
 * __PIN 5 (VCC)__ - Connect VCC to Arduino 5V output
 * __PIN 6 (Vin-)__ - Connect Vin- either to Arduino GND (for Single-Ended voltage readings ranging 0-2.048V) or to an external 2.048V reference source (for Single-Ended voltage readings ranging 0-4.096V) or to 'negative' input (for differential voltage readings between positive and 'negative' inputs).
-* __DECOUPING__: Connect a 0.1uF Ceramic Capacitor between the ADS1110's VCC &amp GND PINS
+* __DECOUPING__: Connect a 0.1uF Ceramic Capacitor between the ADS1110's VCC &amp; GND PINS
 
 >__Note__: The 'negative' of input Vin- is put in brackets here because it actually differential in nature and not a so-called real negative voltage - 
 that is, it's negative only with relation to the positive input side of Vin+.
