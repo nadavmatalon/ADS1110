@@ -135,7 +135,7 @@ void ADS1110::setSampleRate(sample_rate_t newRate) {             // PARAMS: SPS_
  *==============================================================================================================*/
 
 void ADS1110::setConMode(con_mode_t newConMode) {                            // PARAMS: CONT / SINGLE
-    setConfig(bitSet(_config, 4));
+    setConfig(newConMode ? bitSet(_config, 4) : bitClear(_config, 4));
 }
 
 /*==============================================================================================================*
