@@ -1,6 +1,6 @@
-#######################################
+##########################################
 # Syntax Coloring Map For ADS1110
-#######################################
+##########################################
 
 ##########################################
 # Datatypes (KEYWORD1)
@@ -12,49 +12,56 @@ ADS1110	KEYWORD1
 # Instances (KEYWORD2)
 ##########################################
 
-ADS1110	KEYWORD2
-
 ##########################################
 # Methods and Functions (KEYWORD2)
 ##########################################
 
 ping	KEYWORD2
 getGain	KEYWORD2
-setGain	KEYWORD2
-getRate	KEYWORD2
-setRate	KEYWORD2
-getMode	KEYWORD2
-setMode	KEYWORD2
+getSampleRate	KEYWORD2
+getConMode	KEYWORD2
 getRes	KEYWORD2
-setRes	KEYWORD2
 getVref	KEYWORD2
+setGain	KEYWORD2
+setSampleRate	KEYWORD2
+setConMode	KEYWORD2
+setRes	KEYWORD2
 setVref	KEYWORD2
 reset	KEYWORD2
 getData	KEYWORD2
 getVolt	KEYWORD2
 getPercent	KEYWORD2
-singleCon	KEYWORD2
 getComResult	KEYWORD2
-configStr	KEYWORD2
+ADS1110InfoStr	KEYWORD2
+ADS1110InfoStr	KEYWORD2
 
 ##########################################
 # Constants (LITERAL1)
 ##########################################
 
-DEFAULT_SETTINGS	LITERAL1
+DEFAULT_CONFIG	LITERAL1
+DEFAULT_DATA	LITERAL1
 START_CONVERSION	LITERAL1
-CONVERSION_TIME	LITERAL1
+COM_SUCCESS	LITERAL1
+MIN_CON_TIME	LITERAL1
 NUM_BYTES	LITERAL1
+MAX_NUM_ATTEMPTS	LITERAL1
+GAIN_MASK	LITERAL1
 GAIN_1	LITERAL1
 GAIN_2	LITERAL1
 GAIN_4	LITERAL1
 GAIN_8	LITERAL1
+SPS_MASK	LITERAL1
 SPS_15	LITERAL1
 SPS_30	LITERAL1
 SPS_60	LITERAL1
 SPS_240	LITERAL1
 CONT	LITERAL1
 SINGLE	LITERAL1
+MIN_CODE_240	LITERAL1
+MIN_CODE_60	LITERAL1
+MIN_CODE_30	LITERAL1
+MIN_CODE_15	LITERAL1
 RES_12	LITERAL1
 RES_14	LITERAL1
 RES_15	LITERAL1
@@ -67,8 +74,8 @@ EXT_REF	LITERAL1
 #######################################
 
 gain_t	LITERAL2
-rate_t	LITERAL2
-mode_t	LITERAL2
+sample_rate_t	LITERAL2
+con_mode_t	LITERAL2
 min_code_t	LITERAL2
 res_t	LITERAL2
-vneg_t	LITERAL2
+vref_t	LITERAL2
