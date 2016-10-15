@@ -77,9 +77,9 @@ namespace Ads1110_InfoStr {
         errStr
     };
 
-    /*==============================================================================================================*
-     GENERATE DEVICE INFORMATION STRING (PRINTABLE FORMAT)
-     *==============================================================================================================*/
+/*==============================================================================================================*
+    GENERATE DEVICE INFORMATION STRING (PRINTABLE FORMAT)
+ *==============================================================================================================*/
 
     ADS1110_PString ADS1110InfoStr(const ADS1110& devParams) {
         char * ptr;
@@ -120,7 +120,7 @@ namespace Ads1110_InfoStr {
         } else {
             snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&infoStrs[11]));
             resultStr += devInfoBuffer;
-            snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&comCodes[comErrCode]));
+            snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&Ads1110_ComStr::comCodes[comErrCode]));
             resultStr += devInfoBuffer;
             resultStr += "\n";
         }

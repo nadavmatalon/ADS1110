@@ -16,22 +16,21 @@ void ADS1110_PString::begin() {
 }
 
 #if defined(ARDUINO) && ARDUINO >= 100
-size_t ADS1110_PString::write(uint8_t b)
-#else
-void ADS1110_PString::write(uint8_t b)
+    size_t ADS1110_PString::write(uint8_t b)
+    #else
+    void ADS1110_PString::write(uint8_t b)
 #endif
 {
     if (_cur + 1 < _buf + _size) {
         *_cur++ = (char)b;
         *_cur = '\0';
-#if defined(ARDUINO) && ARDUINO >= 100
-        return 1;
-#endif
+        #if defined(ARDUINO) && ARDUINO >= 100
+            return 1;
+        #endif
     }
-    
-#if defined(ARDUINO) && ARDUINO >= 100
-    return 0;
-#endif
+    #if defined(ARDUINO) && ARDUINO >= 100
+        return 0;
+    #endif
 }
 
 int ADS1110_PString::format(char *str, ...) {

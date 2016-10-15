@@ -206,6 +206,7 @@ namespace Ads1110 {
             int    getVolt();
             byte   getPercent();
             byte   getComResult();
+//        private:
             int    _devAddr;
             byte   _config;
             int    _vref;
