@@ -219,12 +219,12 @@ If you want to destruct an instantiated ADS1110 object, you can use the followin
 
 (* requires an additional '\#include' of the relevant *.h file as shown in the corresponding example sketches)  
   
-__ADS1110ComStr();__  
+__Ads1110_ComStr::ADS1110ComStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing human-friendly information about the device's latest I2C communication result  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
   
-__ADS1110InfoStr();__  
+__Ads1110_ComStr::ADS1110InfoStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing detailed information about the device's current settings  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
@@ -253,6 +253,7 @@ Please report any issues/bugs/suggestions at the [Issues](https://github.com/nad
 
 __Ver. 1.0.0__ - First release (26.9.16)  
 __Ver. 1.1.0__ - Major code refactoring (10.10.16)  
+__Ver. 1.2.0__ - Added namespaces to prevent conflicts with other libraries (15.10.16)  
   
 ## LICENSE
 

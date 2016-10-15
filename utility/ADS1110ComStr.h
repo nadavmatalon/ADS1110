@@ -8,6 +8,7 @@
  
     Ver. 1.0.0 - First release (28.3.16)
     Ver. 1.1.0 - Major code refactoring (10.10.16)
+    Ver. 1.2.0 - Added namespaces to prevent conflicts with other libraries (15.10.16)
 
 *===============================================================================================================*
     LICENSE
@@ -33,45 +34,55 @@
  
 *==============================================================================================================*/
 
+#if 1
+__asm volatile ("nop");
+#endif
+
 #ifndef ADS1110ComStr_h
 #define ADS1110ComStr_h
 
 #include <avr/pgmspace.h>
 
-const byte COM_BUFFER_SIZE  = 60;
-const int  NUM_OF_COM_CODES =  8;
+namespace Ads1110_ComStr {
+    
+    const byte COM_BUFFER_SIZE  = 60;
+    const int  NUM_OF_COM_CODES =  8;
 
-const char comMsg0[] PROGMEM = "Success";
-const char comMsg1[] PROGMEM = "Error Code #1: I2C Buffer overflow";
-const char comMsg2[] PROGMEM = "Error Code #2: Address sent, NACK received";
-const char comMsg3[] PROGMEM = "Error Code #3: Data send, NACK received";
-const char comMsg4[] PROGMEM = "Error Code #4: Other error (bus error, etc.)";
-const char comMsg5[] PROGMEM = "Error Code #5: Timed-out while trying to become Bus Master";
-const char comMsg6[] PROGMEM = "Error Code #6: Timed-out while waiting for data to be sent";
-const char comMsgDefault[] PROGMEM = "Error Code #%d: Unlisted error";
+    const char comMsg0[] PROGMEM = "Success";
+    const char comMsg1[] PROGMEM = "Error Code #1: I2C Buffer overflow";
+    const char comMsg2[] PROGMEM = "Error Code #2: Address sent, NACK received";
+    const char comMsg3[] PROGMEM = "Error Code #3: Data send, NACK received";
+    const char comMsg4[] PROGMEM = "Error Code #4: Other error (bus error, etc.)";
+    const char comMsg5[] PROGMEM = "Error Code #5: Timed-out while trying to become Bus Master";
+    const char comMsg6[] PROGMEM = "Error Code #6: Timed-out while waiting for data to be sent";
+    const char comMsgDefault[] PROGMEM = "Error Code #%d: Unlisted error";
 
-const char * const comCodes[NUM_OF_COM_CODES] PROGMEM = {
-        comMsg0,
-        comMsg1,
-        comMsg2,
-        comMsg3,
-        comMsg4,
-        comMsg5,
-        comMsg6,
-        comMsgDefault
-};
+    const char * const comCodes[NUM_OF_COM_CODES] PROGMEM = {
+            comMsg0,
+            comMsg1,
+            comMsg2,
+            comMsg3,
+            comMsg4,
+            comMsg5,
+            comMsg6,
+            comMsgDefault
+    };
 
-/*==============================================================================================================*
-    GET I2C COMMUNICATIONS RESULT MESSAGE (PRINTABLE FORMAT)
- *==============================================================================================================*/
+    /*==============================================================================================================*
+        GET I2C COMMUNICATIONS RESULT MESSAGE (PRINTABLE FORMAT)
+     *==============================================================================================================*/
 
-PString ADS1110ComStr(const ADS1110& devParams) {
-    char devComBuffer[COM_BUFFER_SIZE];
-    PString comStr(devComBuffer, COM_BUFFER_SIZE);
-    char comCodeResult = devParams._comBuffer;
-    char * ptr = (char *) pgm_read_word(&comCodes[comCodeResult]);
-    snprintf_P(devComBuffer, COM_BUFFER_SIZE, ptr, comCodeResult);
-    return comStr;
+    ADS1110_PString ADS1110ComStr(const ADS1110& devParams) {
+        char devComBuffer[COM_BUFFER_SIZE];
+        ADS1110_PString comStr(devComBuffer, COM_BUFFER_SIZE);
+        char comCodeResult = devParams._comBuffer;
+        char * ptr = (char *) pgm_read_word(&comCodes[comCodeResult]);
+        snprintf_P(devComBuffer, COM_BUFFER_SIZE, ptr, comCodeResult);
+        return comStr;
+    }
+    
 }
+
+using namespace Ads1110_ComStr;
 
 #endif
