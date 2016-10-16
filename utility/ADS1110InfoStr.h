@@ -44,7 +44,7 @@ __asm volatile ("nop");
 #include <avr/pgmspace.h>
 #include "utility/ADS1110ComStr.h"
 
-namespace Ads1110_InfoStr {
+namespace Ads1110 {
 
     const int  INFO_BUFFER_SIZE = 60;
     const byte NUM_OF_INFO_STR  = 12;
@@ -120,7 +120,7 @@ namespace Ads1110_InfoStr {
         } else {
             snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&infoStrs[11]));
             resultStr += devInfoBuffer;
-            snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&Ads1110_ComStr::comCodes[comErrCode]));
+            snprintf_P(devInfoBuffer, INFO_BUFFER_SIZE, (char *) pgm_read_word(&comCodes[comErrCode]));
             resultStr += devInfoBuffer;
             resultStr += "\n";
         }
@@ -128,6 +128,6 @@ namespace Ads1110_InfoStr {
     }
 }
 
-using namespace Ads1110_InfoStr;
+using namespace Ads1110;
 
 #endif
