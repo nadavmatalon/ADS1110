@@ -47,9 +47,10 @@ __asm volatile ("nop");
  *==============================================================================================================*/
 
 ADS1110::ADS1110(int devAddr) {
-    _devAddr = devAddr;
-    _config  = DEFAULT_CONFIG;
-    _vref    = INT_REF;
+    _devAddr   = devAddr;
+    _config    = DEFAULT_CONFIG;
+    _vref      = INT_REF;
+    _comBuffer = COM_SUCCESS;
 }
 
 /*==============================================================================================================*
