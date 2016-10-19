@@ -188,7 +188,7 @@ namespace Ads1110 {
 
     class ADS1110 {
         public:
-            ADS1110(int address);
+            ADS1110(byte address);
             ~ADS1110();
             byte   ping();
             byte   getGain();
