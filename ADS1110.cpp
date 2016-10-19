@@ -46,7 +46,7 @@ __asm volatile ("nop");
     CONSTRUCTOR
  *==============================================================================================================*/
 
-ADS1110::ADS1110(int devAddr) {
+ADS1110::ADS1110(byte devAddr) {
     _devAddr   = devAddr;
     _config    = DEFAULT_CONFIG;
     _vref      = INT_REF;
