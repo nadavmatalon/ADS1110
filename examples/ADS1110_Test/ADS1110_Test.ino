@@ -92,9 +92,9 @@
 
 #include "ADS1110.h"
 
-const int  ADS1110_ADDR = 0x48;                   // DEC: 72 - I2C address of the ADS1110 (Change as needed)
+const byte DEV_ADDR = 0x48;                   // DEC: 72 - I2C address of the ADS1110 (Change as needed)
 
-ADS1110 ads1110(ADS1110_ADDR);
+ADS1110 ads1110(DEV_ADDR);
 
 void setup() {
     Serial.begin(9600);
