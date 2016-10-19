@@ -139,12 +139,12 @@ __asm volatile ("nop");
 namespace Ads1110 {
 
     const byte DEFAULT_CONFIG   =  12;      // B00001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
-    const byte DEFAULT_DATA     =   0;      // Default value of Raw Data registers
+    const byte DEFAULT_DATA     =   0;      // default value of Raw Data registers
     const byte START_CONVERSION = 128;      // B10000000 (employed in 'Single-Shot' Conversion Mode)
     const byte COM_SUCCESS      =   0;      // I2C Communication Success (No Error)
-    const byte MIN_CON_TIME     =   5;      // Minimum ADC Comversion time (in mS)
-    const int  NUM_BYTES        =   3;      // Fixed number of bytes requested from the device
-    const int  MAX_NUM_ATTEMPTS =   3;      // Number of attempts to get new data from device
+    const byte MIN_CON_TIME     =   5;      // minimum ADC Comversion time (in mS)
+    const byte  NUM_BYTES      =   3;       // fixed number of bytes requested from the device
+    const int  MAX_NUM_ATTEMPTS =   3;      // number of attempts to get new data from device
 
     typedef enum:byte {
         GAIN_MASK = 0x03,      // 3 - B00000011
@@ -206,8 +206,8 @@ namespace Ads1110 {
             int    getVolt();
             byte   getPercent();
             byte   getComResult();
-//        private:
-            int    _devAddr;
+        private:
+            byte   _devAddr;
             byte   _config;
             int    _vref;
             byte   _comBuffer;

@@ -93,17 +93,17 @@ void setup() {
     Serial.print(F("\nADS1110 INFO STRING TESTING"));
     Serial.print(F("\n---------------------------\n"));
     Serial.print(F("\nCURRENT SETTINGS:\n"));
-    Serial.print(Ads1110_InfoStr::ADS1110InfoStr(ads1110));
+    Serial.print(ADS1110InfoStr(ads1110));
     Serial.print(F("\n\nCHANGING TO NEW SETTINGS..."));
     ads1110.setConMode(SINGLE);
     ads1110.setRes(RES_14);
     ads1110.setVref(EXT_REF);
     Serial.print(F("DONE\n"));
-    Serial.print(Ads1110_InfoStr::ADS1110InfoStr(ads1110));
+    Serial.print(ADS1110InfoStr(ads1110));
     Serial.print(F("\nRESETTING DEVICE..."));
     ads1110.reset();
     Serial.print(F("DONE\n"));
-    Serial.print(Ads1110_InfoStr::ADS1110InfoStr(ads1110));
+    Serial.print(ADS1110InfoStr(ads1110));
     Serial.print(F("\n\n"));
 }
 

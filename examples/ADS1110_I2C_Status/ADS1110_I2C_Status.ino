@@ -96,7 +96,7 @@ void setup() {
     Serial.print(F("\n\nCURRENT DATA:\t"));
     Serial.print(ads1110.getData());
     Serial.print(F("\n\nI2C STATUS:\t"));
-    Serial.print(Ads1110_ComStr::ADS1110ComStr(ads1110));
+    Serial.print(ADS1110ComStr(ads1110));
     Serial.print(F("\n\n"));
 }
 
