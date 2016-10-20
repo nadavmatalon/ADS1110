@@ -1,10 +1,14 @@
 /*
-PString.h - Lightweight printable string class
-Code by: Mikal Hart (http://arduiniana.org/libraries/PString/)
+ADS1110_PString.h - Lightweight printable string class
+Original Code by: Mikal Hart (http://arduiniana.org/libraries/PString/)
 */
 
-#ifndef PString_h
-#define PString_h
+#if 1
+__asm volatile ("nop");
+#endif
+
+#ifndef ADS1110_PString_h
+#define ADS1110_PString_h
 
 #include "Print.h"
 #include <stdarg.h>
@@ -12,9 +16,7 @@ Code by: Mikal Hart (http://arduiniana.org/libraries/PString/)
 #include <stdio.h>
 #include <string.h>
 
-#define PSTRING_LIBRARY_VERSION 3
-
-class PString : public Print {
+class ADS1110_PString : public Print {
     private:
         char *_buf, *_cur;
         size_t _size;
@@ -26,17 +28,17 @@ class PString : public Print {
         #endif
 
         // Basic constructor requires a preallocated buffer
-        PString(char *buf, size_t size) : _buf(buf), _size(size) {
+        ADS1110_PString(char *buf, size_t size) : _buf(buf), _size(size) {
             begin();
         }
     
-        // templated constructors allow inline renderings of this type: PString(buf, size, myfloat[, modifier]);
-        template<class T> PString(char *buf, size_t size, T arg) : _buf(buf), _size(size) {
+        // templated constructors allow inline renderings of this type: ADS1110_PString(buf, size, myfloat[, modifier]);
+        template<class T> ADS1110_PString(char *buf, size_t size, T arg) : _buf(buf), _size(size) {
             begin();
             print(arg);
         }
 
-        template<class T> PString(char *buf, size_t size, T arg, int modifier) : _buf(buf), _size(size) {
+        template<class T> ADS1110_PString(char *buf, size_t size, T arg, int modifier) : _buf(buf), _size(size) {
             begin();
             print(arg, modifier);
         }
@@ -65,14 +67,14 @@ class PString : public Print {
         void begin();
 
         // This function allows assignment to an arbitrary scalar value like str = myfloat;
-        template<class T> inline PString &operator =(T arg) {
+        template<class T> inline ADS1110_PString &operator =(T arg) {
             begin();
             print(arg);
             return *this;
         }
 
         // Concatenation str += myfloat;
-        template<class T> inline PString &operator +=(T arg) {
+        template<class T> inline ADS1110_PString &operator +=(T arg) {
             print(arg);
             return *this;
         }

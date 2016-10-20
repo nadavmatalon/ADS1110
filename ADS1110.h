@@ -10,6 +10,7 @@
  
     Ver. 1.0.0 - First release (28.3.16)
     Ver. 1.1.0 - Major code refactoring (10.10.16)
+    Ver. 1.2.0 - Added namespaces to prevent conflicts with other libraries (15.10.16)
 
 *===============================================================================================================*
     INTRODUCTION
@@ -120,6 +121,10 @@
 
 *==============================================================================================================*/
 
+#if 1
+__asm volatile ("nop");
+#endif
+
 #ifndef ADS1110_h
 #define ADS1110_h
 
@@ -129,90 +134,96 @@
 
 #include <Arduino.h>
 #include "WSWire.h"
-#include "utility/PString.h"
+#include "utility/ADS1110_PString.h"
 
-const byte DEFAULT_CONFIG   =  12;      // B00001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
-const byte DEFAULT_DATA     =   0;      // Default value of Raw Data registers
-const byte START_CONVERSION = 128;      // B10000000 (employed in 'Single-Shot' Conversion Mode)
-const byte COM_SUCCESS      =   0;      // I2C Communication Success (No Error)
-const byte MIN_CON_TIME     =   5;      // Minimum ADC Comversion time (in mS)
-const int  NUM_BYTES        =   3;      // Fixed number of bytes requested from the device
-const int  MAX_NUM_ATTEMPTS =   3;      // Number of attempts to get new data from device
+namespace Ads1110 {
 
-typedef enum:byte {
-    GAIN_MASK = 0x03,      // 3 - B00000011
-    GAIN_1    = 0x00,      // 0 - B00000000 (Default)
-    GAIN_2    = 0x01,      // 1 - B00000001
-    GAIN_4    = 0x02,      // 2 - B00000010
-    GAIN_8    = 0x03       // 3 - B00000011
-} gain_t;
+    const byte DEFAULT_CONFIG   =  12;      // B00001100 (16-BIT, 15 SPS, GAIN x1, CONTINUOUS)
+    const byte DEFAULT_DATA     =   0;      // default value of Raw Data registers
+    const byte START_CONVERSION = 128;      // B10000000 (employed in 'Single-Shot' Conversion Mode)
+    const byte COM_SUCCESS      =   0;      // I2C Communication Success (No Error)
+    const byte MIN_CON_TIME     =   5;      // minimum ADC Comversion time (in mS)
+    const byte  NUM_BYTES      =   3;       // fixed number of bytes requested from the device
+    const int  MAX_NUM_ATTEMPTS =   3;      // number of attempts to get new data from device
 
-typedef enum:byte {
-    SPS_MASK = 0x0C,       // 12 - B00001100
-    SPS_15   = 0x0C,       // 12 - B00001100 (Default)
-    SPS_30   = 0x08,       //  8 - B00001000
-    SPS_60   = 0x04,       //  4 - B00000100
-    SPS_240  = 0x00        //  0 - B00000000
-} sample_rate_t;
+    typedef enum:byte {
+        GAIN_MASK = 0x03,      // 3 - B00000011
+        GAIN_1    = 0x00,      // 0 - B00000000 (Default)
+        GAIN_2    = 0x01,      // 1 - B00000001
+        GAIN_4    = 0x02,      // 2 - B00000010
+        GAIN_8    = 0x03       // 3 - B00000011
+    } gain_t;
 
-typedef enum:byte {
-    CONT          = 0x00,  // B00000000 (Defualt)
-    SINGLE        = 0x10   // B00010000
-} con_mode_t;
+    typedef enum:byte {
+        SPS_MASK = 0x0C,       // 12 - B00001100
+        SPS_15   = 0x0C,       // 12 - B00001100 (Default)
+        SPS_30   = 0x08,       //  8 - B00001000
+        SPS_60   = 0x04,       //  4 - B00000100
+        SPS_240  = 0x00        //  0 - B00000000
+    } sample_rate_t;
 
-typedef enum:byte {
-    MIN_CODE_240 = 0x01,   //  1 - Minimal Data Value for 240_SPS / -2048  (12-BIT)
-    MIN_CODE_60  = 0x04,   //  4 - Minimal Data Value for 60_SPS  / -2048  (14-BIT)
-    MIN_CODE_30  = 0x08,   //  8 - Minimal Data Value for 30_SPS  / -2048  (15-BIT)
-    MIN_CODE_15  = 0x10    // 16 - Minimal Data Value for 15_SPS  / -2048  (16-BIT) (Default)
-} min_code_t;
+    typedef enum:byte {
+        CONT          = 0x00,  // B00000000 (Defualt)
+        SINGLE        = 0x10   // B00010000
+    } con_mode_t;
 
-typedef enum:byte {
-    RES_12,                // 12-BIT Resolution
-    RES_14,                // 14-BIT Resolution
-    RES_15,                // 15-BIT Resolution
-    RES_16                 // 16-BIT Resolution (Default)
-} res_t;
+    typedef enum:byte {
+        MIN_CODE_240 = 0x01,   //  1 - Minimal Data Value for 240_SPS / -2048  (12-BIT)
+        MIN_CODE_60  = 0x04,   //  4 - Minimal Data Value for 60_SPS  / -2048  (14-BIT)
+        MIN_CODE_30  = 0x08,   //  8 - Minimal Data Value for 30_SPS  / -2048  (15-BIT)
+        MIN_CODE_15  = 0x10    // 16 - Minimal Data Value for 15_SPS  / -2048  (16-BIT) (Default)
+    } min_code_t;
 
-typedef enum:int {
-    INT_REF =    0,        // Inernal Reference:  Pin Vin- is connected to GND (Default)
-    EXT_REF = 2048         // External Reference: Pin Vin- is connected to 2.048V source
-} vref_t;
+    typedef enum:byte {
+        RES_12,                // 12-BIT Resolution
+        RES_14,                // 14-BIT Resolution
+        RES_15,                // 15-BIT Resolution
+        RES_16                 // 16-BIT Resolution (Default)
+    } res_t;
 
-class ADS1110 {
-    public:
-        ADS1110(int address);
-        ~ADS1110();
-        byte   ping();
-        byte   getGain();
-        byte   getSampleRate();
-        byte   getConMode();
-        byte   getRes();
-        int    getVref();
-        void   setGain(gain_t newGain);
-        void   setSampleRate(sample_rate_t newRate);
-        void   setConMode(con_mode_t newConMode);
-        void   setRes(res_t newRes);
-        void   setVref(vref_t newVref);
-        void   reset();
-        int    getData();
-        int    getVolt();
-        byte   getPercent();
-        byte   getComResult();
-    private:
-        int    _devAddr;
-        byte   _config;
-        int    _vref;
-        byte   _comBuffer;
-        byte   getConfig();
-        void   setConfig(byte newConfig);
-        byte   findMinCode(sample_rate_t sampleRate);
-        double mapf(double x, double in_min, double in_max, double out_min, double out_max);
-        void   initCall(byte data);
-        void   endCall();
-        void   emptyBuffer();
-        friend PString ADS1110ComStr(const ADS1110&);
-        friend PString ADS1110InfoStr(const ADS1110&);
-};
+    typedef enum:int {
+        INT_REF =    0,        // Inernal Reference:  Pin Vin- is connected to GND (Default)
+        EXT_REF = 2048         // External Reference: Pin Vin- is connected to 2.048V source
+    } vref_t;
+
+    class ADS1110 {
+        public:
+            ADS1110(byte address);
+            ~ADS1110();
+            byte   ping();
+            byte   getGain();
+            byte   getSampleRate();
+            byte   getConMode();
+            byte   getRes();
+            int    getVref();
+            void   setGain(gain_t newGain);
+            void   setSampleRate(sample_rate_t newRate);
+            void   setConMode(con_mode_t newConMode);
+            void   setRes(res_t newRes);
+            void   setVref(vref_t newVref);
+            void   reset();
+            int    getData();
+            int    getVolt();
+            byte   getPercent();
+            byte   getComResult();
+        private:
+            byte   _devAddr;
+            byte   _config;
+            int    _vref;
+            byte   _comBuffer;
+            byte   getConfig();
+            void   setConfig(byte newConfig);
+            byte   findMinCode(sample_rate_t sampleRate);
+            double mapf(double x, double in_min, double in_max, double out_min, double out_max);
+            void   initCall(byte data);
+            void   endCall();
+            void   emptyBuffer();
+            friend ADS1110_PString ADS1110ComStr(const ADS1110&);
+            friend ADS1110_PString ADS1110InfoStr(const ADS1110&);
+    };
+        
+}
+
+using namespace Ads1110;
 
 #endif

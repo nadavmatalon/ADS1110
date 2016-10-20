@@ -32,7 +32,7 @@ getData	KEYWORD2
 getVolt	KEYWORD2
 getPercent	KEYWORD2
 getComResult	KEYWORD2
-ADS1110InfoStr	KEYWORD2
+ADS1110ComStr	KEYWORD2
 ADS1110InfoStr	KEYWORD2
 
 ##########################################

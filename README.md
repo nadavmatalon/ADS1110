@@ -20,8 +20,8 @@ This library contains a complete driver for the ADS1110 offering full control ov
 - **/utility** -  
   - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating pritable information String (see Note #9 below).
   - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a pritable I2C Communication Result String (see Note #10 below).
-  - **PString.h** - Header file for PString class (lighter alternative to String class) 
-  - **PString.cpp** - Compilation file for PString class (lighter alternative to String class) 
+  - **ADS1110_PString.h** - Header file for PString class (lighter alternative to String class) 
+  - **ADS1110_PString.cpp** - Compilation file for PString class (lighter alternative to String class) 
 - **/examples** -   
   - **/ADS1110_Test/ADS1110_Test.ino** - A basic sketch for testing whether the ADS1110 is hooked-up and operating correctly.
   - **ADS1110_Usage/ADS1110_Usage.ino** - A much more extensive sketch offering a complete usage illustration, as well as a rubust testing mechanism.
@@ -219,12 +219,12 @@ If you want to destruct an instantiated ADS1110 object, you can use the followin
 
 (* requires an additional '\#include' of the relevant *.h file as shown in the corresponding example sketches)  
   
-__ADS1110ComStr();__  
+__Ads1110_ComStr::ADS1110ComStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing human-friendly information about the device's latest I2C communication result  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
   
-__ADS1110InfoStr();__  
+__Ads1110_InfoStr::ADS1110InfoStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing detailed information about the device's current settings  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
@@ -253,6 +253,7 @@ Please report any issues/bugs/suggestions at the [Issues](https://github.com/nad
 
 __Ver. 1.0.0__ - First release (26.9.16)  
 __Ver. 1.1.0__ - Major code refactoring (10.10.16)  
+__Ver. 1.2.0__ - Added namespaces to prevent conflicts with other libraries (15.10.16)  
   
 ## LICENSE
 
