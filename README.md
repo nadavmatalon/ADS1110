@@ -27,7 +27,7 @@ This library contains a complete driver for the ADS1110 offering full control ov
     - **ADS1110_Test.ino** - A basic sketch for testing whether the ADS1110 is hooked-up and operating correctly.
   - **/ADS1110_Usage**
     - **ADS1110_Usage.ino** - A much more extensive sketch offering a complete usage illustration, as well as a rubust testing mechanism.
-  - **ADS1110_Info** 
+  - **/ADS1110_Info** 
     - **ADS1110_Info.ino** - A short sketch showing how to generate a Printable Device Information String of the ADS1110's current settings (i.e. Configuration, Limit &anp; Hysteresis registers, etc.).
   - **/ADS1110_I2C_Status**
     - **ADS1110_I2C_Status.ino** - A short sketch for verifying I2C communication has been established between the controller and the ADS1110.
