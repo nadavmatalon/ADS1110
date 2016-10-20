@@ -17,19 +17,23 @@ This library contains a complete driver for the ADS1110 offering full control ov
 
 - **ADS1110.h** - Library Header file.
 - **ADS1110.cpp** - Library Compilation.
-- **/utility** -  
+- **/utility** 
   - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating pritable information String (see Note #9 below).
   - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a pritable I2C Communication Result String (see Note #10 below).
   - **ADS1110_PString.h** - Header file for PString class (lighter alternative to String class) 
   - **ADS1110_PString.cpp** - Compilation file for PString class (lighter alternative to String class) 
-- **/examples** -   
-  - **/ADS1110_Test/ADS1110_Test.ino** - A basic sketch for testing whether the ADS1110 is hooked-up and operating correctly.
-  - **ADS1110_Usage/ADS1110_Usage.ino** - A much more extensive sketch offering a complete usage illustration, as well as a rubust testing mechanism.
-  - **ADS1110_Info/ADS1110_Info.ino** - A short sketch showing how to generate a Printable Device Information String of the ADS1110's current settings (i.e. Configuration, Limit &anp; Hysteresis registers, etc.).
-  - **/ADS1110_I2C_Status/ADS1110_I2C_Status.ino** - A short sketch for verifying I2C communication has been established between the controller and the ADS1110.
-- **/extras** -  
+- **/examples**   
+  - **/ADS1110_Test**
+    - **ADS1110_Test.ino** - A basic sketch for testing whether the ADS1110 is hooked-up and operating correctly.
+  - **/ADS1110_Usage**
+    - **ADS1110_Usage.ino** - A much more extensive sketch offering a complete usage illustration, as well as a rubust testing mechanism.
+  - **ADS1110_Info** 
+    - **ADS1110_Info.ino** - A short sketch showing how to generate a Printable Device Information String of the ADS1110's current settings (i.e. Configuration, Limit &anp; Hysteresis registers, etc.).
+  - **/ADS1110_I2C_Status**
+    - **ADS1110_I2C_Status.ino** - A short sketch for verifying I2C communication has been established between the controller and the ADS1110.
+- **/extras**
   - **License.txt** - A cope of the end-user license agreement.  
-  - **/eagle** -  
+  - **/eagle**
     - **ADS1110.sch** - Schematic file for the ADS1110 breakout board.
     - **ADS1110.brd** - Board layout file for the ADS1110 breakout board.
 - **keywords.txt** - Keywords for this library which will be highlighted in sketches within the Arduino IDE. 
