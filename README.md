@@ -27,8 +27,11 @@ This library contains a complete driver for the ADS1110 offering full control ov
   - **ADS1110_Usage/ADS1110_Usage.ino** - A much more extensive sketch offering a complete usage illustration, as well as a rubust testing mechanism.
   - **ADS1110_Info/ADS1110_Info.ino** - A short sketch showing how to generate a Printable Device Information String of the ADS1110's current settings (i.e. Configuration, Limit &anp; Hysteresis registers, etc.).
   - **/ADS1110_I2C_Status/ADS1110_I2C_Status.ino** - A short sketch for verifying I2C communication has been established between the controller and the ADS1110.
-- **/extras** - 
-  - **License.txt** - A cope of the end-user license agreement.
+- **/extras** -  
+  - **License.txt** - A cope of the end-user license agreement.  
+  - **/eagle** -  
+    - **ADS1110.sch** - Schematic file for the ADS1110 breakout board.
+    - **ADS1110.brd** - Board layout file for the ADS1110 breakout board.
 - **keywords.txt** - Keywords for this library which will be highlighted in sketches within the Arduino IDE. 
 - **library.properties** - General library properties for the Arduino's IDE (>1.5) Library Package Manager.
 - **README.md** - The readme file for this library.
