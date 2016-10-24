@@ -9,6 +9,7 @@
     Ver. 1.0.0 - First release (28.3.16)
     Ver. 1.1.0 - Major code refactoring (10.10.16)
     Ver. 1.2.0 - Added namespaces to prevent conflicts with other libraries (15.10.16)
+    Ver. 1.3.0 - Switched from 'WSWire' library to 'Wire' library for I2C communications (24.10.16)
 
 *===============================================================================================================*
     LICENSE

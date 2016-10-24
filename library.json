@@ -1,6 +1,6 @@
 {
 		"name": "ADS1110",
-	  "version": "1.2.0",
+	  "version": "1.3.0",
 		"frameworks": "AVR",
 		"license": "MIT",
 		"keywords": "ADS1110, I2C, ADC, 16-BIT",

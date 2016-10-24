@@ -9,18 +9,8 @@
   The sketch begins by searching for the ADS1110 on the I2C Bus. I then moves on to get the content of the data and configuration registers 
   available from the device.
   
-  INPORTANT: This library uses the 'WSWire' library (https://github.com/steamfire/WSWireLib/tree/master/Library/WSWire) for I2C communication with 
-  the ADS1110, so it is NECESSARY to have it installed prior to using the current libraty. Alternatively, if you wish to use the 'Wire' library 
-  (https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire) - or any other I2C library for that matter - simply change 
-  the following line the the 'ADS1110.h' file:
-
-      #include <WSWire.h>
-
-  to this:
- 
-      #include <Wire.h>  // or to whatever I2C library name you are using.
-
-  As noted above, whichever library you intend to use for this purpose must be alredy installed for the ADS1110 library to work.
+  INPORTANT: The ADS1110 library depends on the Arduino IDE's native 'Wire' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave),
+  so it is __necessary__ to have it installed prior to using the current libraty.
 
   WIRING DIAGRAM
   --------------
