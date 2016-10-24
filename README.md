@@ -3,7 +3,7 @@
 
 [![Platform Badge](https://img.shields.io/badge/platform-Arduino-orange.svg)](https://www.arduino.cc/)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![SemVer](https://img.shields.io/badge/SemVer-1.2.0-brightgreen.svg)](http://semver.org/)
+[![SemVer](https://img.shields.io/badge/SemVer-1.3.0-brightgreen.svg)](http://semver.org/)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![SemVer](https://img.shields.io/badge/eagle-pcb-yellow.svg)](https://cadsoft.io/)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -58,19 +58,9 @@ that is, it's negative only with relation to the positive input side of Vin+.
 
 ## GENERAL NOTES
 
-1) __I2C Communications Library__
+1) __I2C Communications Library Dependency__
 
-This library uses the '[WSWire](https://github.com/steamfire/WSWireLib/tree/master/Library/WSWire)' library for I2C communication between the contoller IC (Master) and the ADS1110 (Slave), so it is __NECESSARY__ to have it installed prior to using the current libraty. 
-
-Alternatively, if you wish to use the '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' - or any other I2C library for that matter - simply change the following line the the __ADS1110.h__ file:
-```
-#include <WSWire.h>
-```
-to this:
-```
-#include <Wire.h>  // or to whatever I2C library name you are using.
-```
-As noted above, whichever library you intend to use for this purpose __must be alredy installed__ for the ADS1110 library to work.
+This library depends on the Arduino IDE's native '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave), so it is __necessary__ to have it installed prior to using the current libraty. 
 
 2) __Dangers of GAIN Setting__
 
