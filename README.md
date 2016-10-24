@@ -60,7 +60,7 @@ that is, it's negative only with relation to the positive input side of Vin+.
 
 1) __I2C Communications Library Dependency__
 
-This library depends on the Arduino IDE's native '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave), so it is __necessary__ to have it installed prior to using the current libraty. 
+This library depends on the Arduino IDE's native '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave), so it is __necessary__ to have it installed prior to using the current library. 
 
 2) __Dangers of GAIN Setting__
 
