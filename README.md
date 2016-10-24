@@ -1,4 +1,3 @@
-
 # ADS1110 DRIVER
 
 [![Platform Badge](https://img.shields.io/badge/platform-Arduino-orange.svg)](https://www.arduino.cc/)
@@ -20,8 +19,8 @@ This library contains a complete driver for the ADS1110 offering full control ov
 - **ADS1110.h** - Library Header file.
 - **ADS1110.cpp** - Library Compilation.
 - **/utility** 
-  - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating printable information String (see Note #3 below).
-  - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a printable I2C Communication Result String (see Note #4 below).
+  - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating printable information String (see Note #5 below).
+  - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a printable I2C Communication Result String (see Note #6 below).
   - **ADS1110_PString.h** - Header file for PString class (lighter alternative to String class) 
   - **ADS1110_PString.cpp** - Compilation file for PString class (lighter alternative to String class) 
 - **/examples**   
@@ -66,17 +65,25 @@ This library depends on the Arduino IDE's native '[Wire](https://github.com/ardu
 
 As I've managed to fry 2 ADS1110 ICs by changing the GAIN settings from the default x1 to another value, I've decided to stay away from this particular setting and not to include it in the full usage/testing sketch. That said, the library does contain the relevant functions for getting/setting the GAIN, however, make sure you know what you're doing when fiddling with this as you may damage your device.
 
-3) __Device Information String__
+3) __Voltage Reference Settings__
 
-It possible to extend the ADS1110 Library to include a function for generating a pritable device information string showing all the relevant details about the devices current Configuration, Limit & Hysteresis settings. As the additional functionality comes at the cost of increased memory footprint, it was implemented as an optional add-on rather than added directly to the core ADS1110 Library. See the [ADS1110_Info](https://github.com/nadavmatalon/ADS1110/blob/master/examples/ADS1110_Info/ADS1110_Info.ino) example sketch for detailed explanation and an actual usage demo.
+To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection &amp; an INTERNAL settings definition).  
 
-4) __Device I2C Communications String__
+4) __Sample Rate &amp; Resolution Interdependence__
 
-It is also possible to extend the ADS1110 Library to include a function for generating a pritable I2C Communications string showing the result of each I2C transaction in a human-friendly way, something that may be useful, for example, during debugging sessions. As the additional functionality comes at the cost of increased memory footprint, it was implemented as an optional add-on rather than added directly to the core ADS1110 Library. See the [ADS1110_I2C_Status](https://github.com/nadavmatalon/ADS1110/blob/master/examples/ADS1110_I2C_Status/ADS1110_I2C_Status.ino) example sketch for detailed explanation and an actual usage demo.
+The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically cause the other to change accordingly (15_SPS == 16-BIT / 30_SPS == 15-BIT / 60_SPS == 14-BIT / 240_SPS == 12-BIT).  
+
+5) __Device Information String__
+
+It possible to extend the ADS1110 Library to include a function for generating a printable device information string showing all the relevant details about the devices current Configuration, Limit & Hysteresis settings. As the additional functionality comes at the cost of increased memory footprint, it was implemented as an optional add-on rather than added directly to the core ADS1110 Library. See the [ADS1110_Info](https://github.com/nadavmatalon/ADS1110/blob/master/examples/ADS1110_Info/ADS1110_Info.ino) example sketch for detailed explanation and an actual usage demo.
+
+6) __Device I2C Communications String__
+
+It is also possible to extend the ADS1110 Library to include a function for generating a printable I2C Communications string showing the result of each I2C transaction in a human-friendly way, something that may be useful, for example, during debugging sessions. As the additional functionality comes at the cost of increased memory footprint, it was implemented as an optional add-on rather than added directly to the core ADS1110 Library. See the [ADS1110_I2C_Status](https://github.com/nadavmatalon/ADS1110/blob/master/examples/ADS1110_I2C_Status/ADS1110_I2C_Status.ino) example sketch for detailed explanation and an actual usage demo.
 
 ## I2C ADDRESSES
 
-Each ADS1110 has 1 of 8 possible I2C addresses (factory hardwired & recognized by its specific part number & top marking on the package itself):
+Each ADS1110 has 1 of 8 possible I2C addresses (factory hardwired &amp; recognized by its specific part number & top marking on the package itself):
 
 | PART NO.  | BIN     | HEX  | DEC | MARKING |
 |-----------|---------|------|-----|---------|
@@ -106,11 +113,11 @@ At this point you can construct a new ADS1110 object(s) by using the following c
 ADS1110 device_name(device_address);
 ```
 
->__NOTE__: replace '__device_name__' with a name of your choice. Also, make sure to replace the variable '__device_address__' with 
-the specific I2C address of your device - see I2C ADDRESSES section above.
+>Replace '__device_name__' with a name of your choice. Also, make sure to replace the variable '__device_address__' with 
+the specific I2C address of your device if needed (see I2C ADDRESSES section above).
 
 
-## LIBRARY METHODS
+## LIBRARY FUNCTIONS
 
 With the library installed &amp; included in the sketch, and an ADS1110 object initiallized, the following functions are available (see the usage example sketch for a detailed implementation):
 
@@ -212,27 +219,22 @@ If you want to destruct an instantiated ADS1110 object, you can use the followin
 ```
 ~ADS1110 device_name();
 ```
->__NOTE__: replace the '__device_name__' above with the name of your ADS1110 device.
+>Replace '__device_name__' with the name of your ADS1110 device.
 
 ## Extended Functionality*
 
 (* requires an additional '\#include' of the relevant *.h file as shown in the corresponding example sketches)  
   
-__Ads1110_ComStr::ADS1110ComStr();__  
+__ADS1110ComStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing human-friendly information about the device's latest I2C communication result  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
   
-__Ads1110_InfoStr::ADS1110InfoStr();__  
+__ADS1110InfoStr();__  
 Parameters:&nbsp;&nbsp;&nbsp;Name of an initialized ADS1110 instance  
 Description:&nbsp;&nbsp;Returns printable string containing detailed information about the device's current settings  
 Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString  
-  
->__IMPORTANT:__ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readings__, it is crucial to have the __Voltage Reference (Vref)__ setting defined correctly (i.e. INTERNAL / EXTERNAL). This is done on the basis of the physical hookup of the ADS1110's pin Vin- (namely: INTERNAL if this pin goes to GND, or EXTERNAL if it goes to an 2.048V external source. The default is GND connection & INTERNAL definition).  
-  
->__NOTE:__ The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically 
-cause the other to change accordingly (15_SPS == 16-BIT / 30_SPS == 15-BIT / 60_SPS == 14-BIT / 240_SPS == 12-BIT).  
-  
+
 ## RUNNING THE EXAMPLE SKETCHES
   
 1) Hook-up the ADS1110 to the Arduino as explained above.  
