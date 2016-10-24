@@ -71,7 +71,7 @@ To get the correct __Raw Data Reading__/__Voltage Readings__/__Percentage Readin
 
 4) __Sample Rate &amp; Resolution Interdependence__
 
-The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically cause the other to change accordingly (15_SPS == 16-BIT / 30_SPS == 15-BIT / 60_SPS == 14-BIT / 240_SPS == 12-BIT).  
+The ADS1110's __Sample Rate__ and __Resolution__ settings are interdependent, that is, setting the value of one will automatically cause the other to change accordingly (15_SPS = 16-BIT / 30_SPS = 15-BIT / 60_SPS = 14-BIT / 240_SPS = 12-BIT).  
 
 5) __Device Information String__
 
