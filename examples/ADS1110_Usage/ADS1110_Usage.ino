@@ -2,12 +2,10 @@
   ADS1110 LIBRARY - COMPLETE USAGE EXAMPLE SKETCH
   -----------------------------------------------
 
-  This sketch exposes all the functions offered by the ADS1110 library as detailed below, thereby offering a quick & easy way of testing your ADS1110.
+  This sketch exposes all the functions offered by the ADS1110 library as detailed below, thereby providing a quick & easy way of testing the device.
 
 
-  INPORTANT: The ADS1110 library depends on the Arduino IDE's native 'Wire' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave),
-  so it is __necessary__ to have it installed prior to using the current libraty.
-
+  INPORTANT: The current library depends on the Arduino IDE's native 'Wire' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave).
 
   WIRING DIAGRAM
   --------------
@@ -59,15 +57,14 @@
   
   Next, include the ADS1110 library at the top of the sketch as follows:
 
-    #include <ADS1110.h>
+    #include "ADS1110.h"
 
   At this point you can construct a new ADS1110 object with the following line (place it at the top of the sketch 
   after the 'include' line):
 
     ADS1110 device_name(device_address);
 
-   NOTE: replace the 'device_name' above with a name of your choice. Also, make sure to replace the variable 'device_address' with 
-   the specific I2C address of your device (see I2C ADDRESSES section above).
+   NOTE: replace 'device_name' with a name of your choice. Also, make sure to replace the variable 'device_address' with the specific I2C address of your device (see I2C ADDRESSES section above).
 
   RUNNING THE COMPLETE USAGE EXAMPLE SKETCH
   -----------------------------------------

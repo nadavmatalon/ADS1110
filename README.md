@@ -20,8 +20,8 @@ This library contains a complete driver for the ADS1110 offering full control ov
 - **ADS1110.h** - Library Header file.
 - **ADS1110.cpp** - Library Compilation.
 - **/utility** 
-  - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating pritable information String (see Note #9 below).
-  - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a pritable I2C Communication Result String (see Note #10 below).
+  - **ADS1110InfoStr.h** - Header file containing a functional extention of the library to include generating printable information String (see Note #3 below).
+  - **ADS1110ComStr.h** - Header file containing a functional extention of the library to include generating a printable I2C Communication Result String (see Note #4 below).
   - **ADS1110_PString.h** - Header file for PString class (lighter alternative to String class) 
   - **ADS1110_PString.cpp** - Compilation file for PString class (lighter alternative to String class) 
 - **/examples**   
@@ -60,7 +60,7 @@ that is, it's negative only with relation to the positive input side of Vin+.
 
 1) __I2C Communications Library Dependency__
 
-This library depends on the Arduino IDE's native '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave), so it is __necessary__ to have it installed prior to using the current library. 
+This library depends on the Arduino IDE's native '[Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire)' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave). 
 
 2) __Dangers of GAIN Setting__
 
@@ -97,7 +97,7 @@ Begin by installing the library either by using the Arduino IDE's Installation W
 Next, include the library at the top of the sketch as follows:
 
 ```
-#include <ADS1110.h>
+#include "ADS1110.h"
 ```
 
 At this point you can construct a new ADS1110 object(s) by using the following command (at the top of the sketch after the 'include' line):
@@ -106,13 +106,13 @@ At this point you can construct a new ADS1110 object(s) by using the following c
 ADS1110 device_name(device_address);
 ```
 
->__NOTE__: replace the '__device_name__' above with a name of your choice. Also, make sure to replace the variable '__device_address__' with 
+>__NOTE__: replace '__device_name__' with a name of your choice. Also, make sure to replace the variable '__device_address__' with 
 the specific I2C address of your device - see I2C ADDRESSES section above.
 
 
 ## LIBRARY METHODS
 
-With the library installed & included in the sketch, and an ADS1110 object initiallized, the following functions are available (see the usage example sketch for a detailed implementation):
+With the library installed &amp; included in the sketch, and an ADS1110 object initiallized, the following functions are available (see the usage example sketch for a detailed implementation):
 
 __Note About Methods' Return Values:__  
 All 'get' methods return some sort of value (e.g. getGain(), getMode() etc.), while all 'set' methods return nothing. Nevertheless, ALL methods implicitly update the library's __I2C _comBuffer__ (=communication buffer) after each I2C transmission. The reason for this functional design is to maintain structural coherance between the 'get' and 'set' methods. As 'get' methods cannot return both the desired value and the I2C transmission's result simultaniously. Consequently, if the relevant value hasn't been obtained by a particular 'get' method, the user can simply check the content of the _comBuffer to see what error occured. Similarly, it is possible to check if a particular setting has been successfully applied via a 'set' method either by preforming the corresponding 'get' method or by checking the content of the _comBuffer (0 indicates a successful transmission, 1-6 indicate an error as listed below). 
@@ -246,14 +246,14 @@ Please report any issues/bugs/suggestions at the [Issues](https://github.com/nad
 ## TODO
   
 * __CORE LIBRARY__: Add running average functionality  
-* __ADS1110ComStr__: Move to independent Library  
   
 ## VERSION HISTORY
 
 __Ver. 1.0.0__ - First release (26.9.16)  
 __Ver. 1.1.0__ - Major code refactoring (10.10.16)  
 __Ver. 1.2.0__ - Added namespaces to prevent conflicts with other libraries (15.10.16)  
-  
+__Ver. 1.3.0__ - Switched from 'WSWire' library to 'Wire' library for I2C communications (24.10.16)
+
 ## LICENSE
 
 [The MIT License (MIT)](https://opensource.org/licenses/MIT)

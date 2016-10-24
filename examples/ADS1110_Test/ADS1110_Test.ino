@@ -9,8 +9,7 @@
   The sketch begins by searching for the ADS1110 on the I2C Bus. I then moves on to get the content of the data and configuration registers 
   available from the device.
   
-  INPORTANT: The ADS1110 library depends on the Arduino IDE's native 'Wire' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave),
-  so it is __necessary__ to have it installed prior to using the current libraty.
+  INPORTANT: The ADS1110 library depends on the Arduino IDE's native 'Wire' library for I2C communication between the Arduino (Master) and the ADS1110 (Slave).
 
   WIRING DIAGRAM
   --------------
