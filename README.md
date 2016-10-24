@@ -1,5 +1,5 @@
 
-# ADS1110 AVR DRIVER LIBRARY
+# ADS1110 DRIVER
 
 [![Platform Badge](https://img.shields.io/badge/platform-Arduino-orange.svg)](https://www.arduino.cc/)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
