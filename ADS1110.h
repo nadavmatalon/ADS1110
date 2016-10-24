@@ -144,7 +144,7 @@ namespace Ads1110 {
     const byte START_CONVERSION = 128;      // B10000000 (employed in 'Single-Shot' Conversion Mode)
     const byte COM_SUCCESS      =   0;      // I2C Communication Success (No Error)
     const byte MIN_CON_TIME     =   5;      // minimum ADC Comversion time (in mS)
-    const byte  NUM_BYTES      =   3;       // fixed number of bytes requested from the device
+    const byte NUM_BYTES        =   3;      // fixed number of bytes requested from the device
     const int  MAX_NUM_ATTEMPTS =   3;      // number of attempts to get new data from device
 
     typedef enum:byte {
