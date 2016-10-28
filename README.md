@@ -116,6 +116,16 @@ ADS1110 device_name(device_address);
 >Replace '__device_name__' with a name of your choice. Also, make sure to replace the variable '__device_address__' with 
 the specific I2C address of your device if needed (see I2C ADDRESSES section above).
 
+Next, make sure to inlude an instruction for initializing the I2C Bus for the [Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire) Library, as follows:
+
+(There's no need to include the [Wire](https://github.com/arduino/Arduino/tree/master/hardware/arduino/avr/libraries/Wire) Library at the top of the sketch as it's already included by the present library)
+
+```
+void setup() {
+    Wire.begin();
+    // ...other setup code...
+}
+```
 
 ## LIBRARY FUNCTIONS
 
