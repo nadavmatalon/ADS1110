@@ -248,7 +248,7 @@ Returns:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PString
 ## RUNNING THE EXAMPLE SKETCHES
   
 1) Start the Arduino IDE and open the relevant example sketch  
-2) Hook-up the MCP9802 to the Arduino as explained in the sketch's notes   
+2) Hook-up the ADS1110 to the Arduino as explained in the sketch's notes   
 3) Upload the sketch to the Arduino  
 4) Open the Serial Communications Window (make sure the baud-rate is set to 9600 or change it in the sketch to match your Serial Port's buad-rate)  
   
