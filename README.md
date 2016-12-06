@@ -12,7 +12,9 @@ The ADS1110 is a 16-Bit Single-Channel (Single-Ended or Differential) ADC with O
 
 This library contains a complete driver for the ADS1110 offering full control over its Configuration Settings, as well as the ability to recieve raw data, voltage readings (in mV, to avoid floating point math) or percentage readings in either Single-Shot or Continuous mode.
 
-[ADS1110 DATASHEET](http://www.ti.com/lit/ds/symlink/ads1110.pdf)
+<img src="extras/images/ads1110_pinout.png" alt="ADS1110 PINOUT" width="350" height="240">
+
+Source: [ADS1110 DATASHEET](http://www.ti.com/lit/ds/symlink/ads1110.pdf)
 
 ## Repository Contents
 
