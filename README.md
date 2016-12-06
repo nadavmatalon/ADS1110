@@ -39,6 +39,8 @@ Source: [ADS1110 DATASHEET](http://www.ti.com/lit/ds/symlink/ads1110.pdf)
   - **/eagle**
     - **ADS1110.sch** - Schematic file for the ADS1110 breakout board.
     - **ADS1110.brd** - Board layout file for the ADS1110 breakout board.
+  - **/images**
+    - **ads1110_pinout.png** - Pinout image of the ADS1110.
 - **keywords.txt** - Keywords for this library which will be highlighted in sketches within the Arduino IDE. 
 - **library.properties** - General library properties for the Arduino's IDE (>1.5) Library Package Manager.
 - **README.md** - The readme file for this library.
